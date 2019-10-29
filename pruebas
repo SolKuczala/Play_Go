@@ -1,0 +1,7 @@
+search nil
+
+
+slice(como una lista/array de js)
+append()(como el push/ de js )
+make(para crear el slice)
+make([]int, capacidad_2_)
