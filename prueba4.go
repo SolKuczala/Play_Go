@@ -17,7 +17,7 @@ func main(){
 	fmt.Println(a, b)
 }
 
-//se puede usar un solo valor de lo que devuelve una funcion, se soluciona con _
+//se puede usar un solo valor(normalmente devuelve el resultado + el errors) de lo que devuelve una funcion, se soluciona con _
 func main(){
 	_b := intercambiar('wojnvjka'. 'navjnav')
 	fmt.Println(b)
