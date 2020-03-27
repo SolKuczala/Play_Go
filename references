@@ -5,3 +5,7 @@ slice(como una lista/array de js)
 append()(como el push/ de js )
 make(para crear el slice)
 make([]int, capacidad_2_)
+
+en el server/ gin-gonic
+
+para leer el request gin lo mete en 'Context'
