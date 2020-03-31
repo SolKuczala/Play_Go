@@ -6,6 +6,32 @@ append()(como el push/ de js )
 make(para crear el slice)
 make([]int, capacidad_2_)
 
+
+package log
+es como fmt pero loguea con fecha y hora
+
+se pueden renombrar los paquetes:
+import {nombre que queres ponerle} fmt //por ejemplo
+o sea:
+import f "fmt"
+
+para correr archivos
+en una carpeta va a existir un main.go obligatorio en el cual 
+vos podes tener mas archivos go que tengan que ver con ese main, que a la hora de
+hacer go run, tenes que pasarle *go. Esto se debe a que necesitas 'correrlos' todos porque 
+de otro modo no los va a tomar en cuenta...
+
+se pueden asignar funciones a variable dentro de otras funciones(sin pasarselos)
+
 en el server/ gin-gonic
 
 para leer el request gin lo mete en 'Context'
+
+
+sobre condicionales
+en el if, hay una particularidad de que
+se puede inicializar una variable para evaluarla luego like:
+
+if m := i % 2 ; m == 0 {
+    //do something
+}
