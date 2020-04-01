@@ -1,10 +1,15 @@
 package main
 
+//validar la data que le llega y resp
 import (
 	"fmt"
 
+	"./board"
+
 	"github.com/gin-gonic/gin"
 )
+
+var Board [3][3]string
 
 func main() {
 	r := gin.Default()
@@ -17,7 +22,8 @@ func main() {
 func createGame(c *gin.Context) {
 	//crea el board de juego que le manda al user cuando va al path /create-game
 	c.JSON(200, gin.H{"message": "hola"})
-
+	Board := board.NewBoard()
+	board.PrintBoard(Board)
 	println(c) //prints this: 0xc00032e380
 }
 
