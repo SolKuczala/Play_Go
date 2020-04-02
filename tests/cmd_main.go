@@ -11,10 +11,10 @@ var Board [3][3]string
 func main() {
 	Board = board.NewBoard()
 	board.PrintBoard(Board)
-	err := board.Play("X", 0, 1, &Board)
+	err := board.Play("X", 0, -1, &Board)
 	printError(err)
 
-	err = board.Play("X", 0, 1, &Board)
+	err = board.Play("X", 0, 3, &Board)
 	printError(err)
 	board.PrintBoard(Board)
 }
