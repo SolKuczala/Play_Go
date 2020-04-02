@@ -2,29 +2,26 @@ package main
 
 import (
 	"fmt"
+
+	"../project/board"
 )
 
+var Board [3][3]string
+
 func main() {
-	//print only values with enters between lines
-	board := newBoard()
-	for i, innerArray := range board {
-		for j, _ := range innerArray {
-			fmt.Printf(board[i][j])
-		}
-		fmt.Println("")
-	}
+	Board = board.NewBoard()
+	board.PrintBoard(Board)
+	err := board.Play("X", 0, 1, &Board)
+	printError(err)
+
+	err = board.Play("X", 0, 1, &Board)
+	printError(err)
+	board.PrintBoard(Board)
 }
 
-func newBoard() [3][3]string {
-	var matrix [3][3]string //[[, , ],[ , , ],[ , , ]]
-
-	for i := 0; i < len(matrix); i++ {
-		//me trae cada aarray de matrix
-		for j := 0; j < len(matrix[i]); j++ {
-			//me trae 1 valor de cada array
-			matrix[i][j] = "#"
-		}
+//funcion que haga la siguiente linea:
+func printError(err error) {
+	if err != nil {
+		fmt.Println(err.Error())
 	}
-	//fmt.Printf("%+v", matrix)
-	return matrix
 }
