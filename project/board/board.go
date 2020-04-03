@@ -10,7 +10,7 @@ import (
 *Initializes and returns an empty board.
  */
 //TODO: cambiar el string a slice y el nombre
-func NewBoard() [3][3]string {
+func New() [3][3]string {
 	var matrix [3][3]string //[[, , ],[ , , ],[ , , ]]
 
 	for i := 0; i < len(matrix); i++ {
@@ -69,6 +69,45 @@ func Play(char string, coor Place, board *[3][3]string) error {
 type Place struct {
 	X uint
 	Y uint
+}
+
+//podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
+//el segundo for
+func Check(board *[3][3]string) (result string) {
+	//determina si alguien gana o no
+	//mi for recorrera toda la matriz y recolectara la info para
+	//determinar si hay un ganador y quien o no
+	//condicion de winning
+	//que es mejor? duplicar estas variables o tener un if mas abajo?
+	type conditions struct{
+		row		[2]int
+		column 	[2]int
+		diag1 	[2]int
+		diag2 	[2]int
+	}
+	var condition conditions
+	x, o := 0, 1
+
+	for i := 0; i < len(board); i++ {
+		for j := 0; i < len(board); j++ {
+			if board[i][j] == "#" {
+				continue
+			}else if board[i][j] == "X"{
+					condition.row[x]++
+					condition.diag1[x]++	
+				}else if board[i][j] == "O"{
+					condition.column[o]++
+					condition.diag1[o]++
+				}
+			}
+		}
+	}
+		
+	if condiciones == 3 {
+		return errors.Error("player tal win")
+	}else{
+		return errors.Error("ninguno gano, quieren jugar de nuevo?")
+	}
 }
 
 // other way to make types : type place [2]int

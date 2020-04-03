@@ -9,15 +9,12 @@ import (
 var Board [3][3]string
 
 func main() {
-	Board = board.NewBoard()
+	Board = board.New()
 	c := board.Place{X: 0, Y: 2}
 	err := board.Play("X", c, &Board)
 	printError(err)
 	board.PrintBoard(Board)
-
-	//err = board.Play("X", , &Board)
-	//printError(err)
-	//board.PrintBoard(Board)
+	printError(err)
 }
 
 //funcion que haga la siguiente linea:
