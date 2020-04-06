@@ -75,14 +75,14 @@ type Coord struct {
 //el segundo for
 func Check(board *[3][3]string) string {
 	//determina si alguien gana o no
-	// tengo que verificar si cualquiera de los numberOfs llega a 3
-	//para declarar ganador o tie
+	// TO DO: no me esta contando bien diag 2 y falta que cuente las rows
 	type conditions struct {
 		row    [2]int
 		column [2]int
 		diag1  [2]int
 		diag2  [2]int
 	}
+	var player int
 	var numberOf conditions
 	o, x := 0, 1
 	for row := 0; row < len(board); row++ {
@@ -90,12 +90,16 @@ func Check(board *[3][3]string) string {
 			item := board[row][column]
 			if item == "#" {
 				continue
+				//esto sigue al siguiente column
 			}
-			var player int
 			if item == "X" {
 				player = x
 			} else if item == "O" {
 				player = o
+			}
+
+			if column >= 0 {
+				numberOf.column[player]++
 			}
 
 			if row == column {
@@ -103,6 +107,7 @@ func Check(board *[3][3]string) string {
 			} else if row+column == len(board)-1 {
 				numberOf.diag2[player]++
 			}
+
 			/*else if row{
 				numberOf.row[player]++
 			}else if column{
