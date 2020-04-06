@@ -73,41 +73,50 @@ type Place struct {
 
 //podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
 //el segundo for
-func Check(board *[3][3]string) (result string) {
+func Check(board *[3][3]string) string {
 	//determina si alguien gana o no
-	//mi for recorrera toda la matriz y recolectara la info para
-	//determinar si hay un ganador y quien o no
-	//condicion de winning
-	//que es mejor? duplicar estas variables o tener un if mas abajo?
-	type conditions struct{
-		row		[2]int
-		column 	[2]int
-		diag1 	[2]int
-		diag2 	[2]int
+	// tengo que verificar si cualquiera de los numberOfs llega a 3
+	//para declarar ganador o tie
+	type conditions struct {
+		row    [2]int
+		column [2]int
+		diag1  [2]int
+		diag2  [2]int
 	}
-	var condition conditions
-	x, o := 0, 1
-
-	for i := 0; i < len(board); i++ {
-		for j := 0; i < len(board); j++ {
-			if board[i][j] == "#" {
+	var numberOf conditions
+	o, x := 0, 1
+	for row := 0; row < len(board); row++ {
+		for column := 0; column < len(board); column++ {
+			item := board[row][column]
+			if item == "#" {
 				continue
-			}else if board[i][j] == "X"{
-					condition.row[x]++
-					condition.diag1[x]++	
-				}else if board[i][j] == "O"{
-					condition.column[o]++
-					condition.diag1[o]++
-				}
 			}
+			var player int
+			if item == "X" {
+				player = x
+			} else if item == "O" {
+				player = o
+			}
+
+			if row == column {
+				numberOf.diag1[player]++
+			} else if row+column == len(board)-1 {
+				numberOf.diag2[player]++
+			}
+			/*else if row{
+				numberOf.row[player]++
+			}else if column{
+				numberOf.column[player]++
+			}*/
 		}
 	}
-		
-	if condiciones == 3 {
-		return errors.Error("player tal win")
-	}else{
-		return errors.Error("ninguno gano, quieren jugar de nuevo?")
-	}
+	fmt.Printf("%+v", numberOf)
+	//if condiciones == 3 {
+	//	return errors.Error("player tal win")
+	//} else {
+	//	return errors.Error("ninguno gano, va de nuevo?")
+	//}
+	return "dsaf"
 }
 
 // other way to make types : type place [2]int

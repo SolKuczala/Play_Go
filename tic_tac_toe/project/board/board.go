@@ -42,7 +42,7 @@ func PrintBoard(board [3][3]string) {
 *Makes the play receiving the letter, the coordinates for the placing
 *and the board itself
  */
-func Play(char string, coor Place, board *[3][3]string) error {
+func Play(char string, coor Coord, board *[3][3]string) error {
 	//modifico el board segun la letra y la coordenada
 	//este es el board vacio, check
 	//coloco el string
@@ -66,32 +66,31 @@ func Play(char string, coor Place, board *[3][3]string) error {
 	return nil
 }
 
-type Place struct {
+type Coord struct {
 	X uint
 	Y uint
 }
 
 //podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
 //el segundo for
-func Check(board *[3][3]string) (result string) {
+func Check(board *[3][3]string) string {
 	//determina si alguien gana o no
 	// tengo que verificar si cualquiera de los numberOfs llega a 3
 	//para declarar ganador o tie
-	type conditions struct{
-		row		[2]int
-		column 	[2]int
-		diag1 	[2]int
-		diag2 	[2]int
+	type conditions struct {
+		row    [2]int
+		column [2]int
+		diag1  [2]int
+		diag2  [2]int
 	}
 	var numberOf conditions
 	o, x := 0, 1
-	item := board[row][column]	
-	for row := 0; i < len(board); i++ {
-		for column := 0; i < len(board); j++ {
+	for row := 0; row < len(board); row++ {
+		for column := 0; column < len(board); column++ {
+			item := board[row][column]
 			if item == "#" {
-				continue		
+				continue
 			}
-
 			var player int
 			if item == "X" {
 				player = x
@@ -99,23 +98,25 @@ func Check(board *[3][3]string) (result string) {
 				player = o
 			}
 
-			if row == column{
+			if row == column {
 				numberOf.diag1[player]++
-			}else if row + column == len(board)-1{
+			} else if row+column == len(board)-1 {
 				numberOf.diag2[player]++
-			}else if /*row*/{
-				numberOf.row[player]++
-			}else if /*column*/{
-				numberOf.column[player]++
 			}
+			/*else if row{
+				numberOf.row[player]++
+			}else if column{
+				numberOf.column[player]++
+			}*/
 		}
 	}
-
-	if condiciones == 3 {
-		return errors.Error("player tal win")
-	}else{
-		return errors.Error("ninguno gano, quieren jugar de nuevo?")
-	}
+	fmt.Printf("%+v", numberOf)
+	//if condiciones == 3 {
+	//	return errors.Error("player tal win")
+	//} else {
+	//	return errors.Error("ninguno gano, va de nuevo?")
+	//}
+	return "dsaf"
 }
 
-// other way to make types : type place [2]int
+// other way to make types : type Coord [2]int
