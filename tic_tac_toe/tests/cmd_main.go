@@ -12,10 +12,8 @@ func main() {
 	Board = board.New()
 	a := board.Coord{X: 0, Y: 0}
 	b := board.Coord{X: 0, Y: 1}
-	c := board.Coord{X: 0, Y: 2}
-	d := board.Coord{X: 1, Y: 0}
 	e := board.Coord{X: 1, Y: 1}
-	f := board.Coord{X: 1, Y: 2}
+	f := board.Coord{X: 0, Y: 2}
 	g := board.Coord{X: 2, Y: 0}
 	h := board.Coord{X: 2, Y: 1}
 	i := board.Coord{X: 2, Y: 2}
@@ -23,13 +21,9 @@ func main() {
 	printError(err)
 	err = board.Play("X", b, &Board)
 	printError(err)
-	err = board.Play("X", c, &Board)
-	printError(err)
-	err = board.Play("X", d, &Board)
+	err = board.Play("X", f, &Board)
 	printError(err)
 	err = board.Play("X", e, &Board)
-	printError(err)
-	err = board.Play("X", f, &Board)
 	printError(err)
 	err = board.Play("X", g, &Board)
 	printError(err)

@@ -98,21 +98,14 @@ func Check(board *[3][3]string) string {
 				player = o
 			}
 
-			if column >= 0 {
-				numberOf.column[player]++
-			}
+			numberOf.row[player]++
 
 			if row == column {
 				numberOf.diag1[player]++
-			} else if row+column == len(board)-1 {
+			}
+			if row+column == len(board)-1 {
 				numberOf.diag2[player]++
 			}
-
-			/*else if row{
-				numberOf.row[player]++
-			}else if column{
-				numberOf.column[player]++
-			}*/
 		}
 	}
 	fmt.Printf("%+v", numberOf)
