@@ -87,18 +87,20 @@ func Check(board *[3][3]string) string {
 	o, x := 0, 1
 	for row := 0; row < len(board); row++ {
 		for column := 0; column < len(board); column++ {
-			item := board[row][column]
-			if item == "#" {
+			itemA := board[row][column]
+			itemB := board[column][row]
+			if itemA == "#" || itemB == "#" {
 				continue
 				//esto sigue al siguiente column
 			}
-			if item == "X" {
+			if itemA == "X" || itemB == "X" {
 				player = x
-			} else if item == "O" {
+			} else if itemA == "O" || itemB == "O" {
 				player = o
 			}
 
 			numberOf.row[player]++
+			numberOf.column[player]++
 
 			if row == column {
 				numberOf.diag1[player]++
@@ -106,15 +108,26 @@ func Check(board *[3][3]string) string {
 			if row+column == len(board)-1 {
 				numberOf.diag2[player]++
 			}
+
+		}
+
+		fmt.Printf("%+v\n", numberOf)
+		if numberOf.row[x] == len(board) {
+			return "Row! X won!"
+		} else if numberOf.row[o] == len(board) {
+			return "Row! O won!"
+		} else {
+			numberOf.row[x] = 0
+			numberOf.row[o] = 0
 		}
 	}
-	fmt.Printf("%+v", numberOf)
-	//if condiciones == 3 {
-	//	return errors.Error("player tal win")
-	//} else {
-	//	return errors.Error("ninguno gano, va de nuevo?")
-	//}
-	return "dsaf"
+
+	if numberOf.diag1[x] == len(board) || numberOf.diag2[x] == len(board) {
+		return "Diagonal! X won!"
+	} else if numberOf.diag1[o] == len(board) || numberOf.diag2[o] == len(board) {
+		return "Diagonal! O won!"
+	}
+	return "no win, play again?"
 }
 
 // other way to make types : type Coord [2]int

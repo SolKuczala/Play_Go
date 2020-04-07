@@ -12,8 +12,8 @@ func main() {
 	Board = board.New()
 	a := board.Coord{X: 0, Y: 0}
 	b := board.Coord{X: 0, Y: 1}
+	f := board.Coord{X: 1, Y: 1}
 	e := board.Coord{X: 1, Y: 1}
-	f := board.Coord{X: 0, Y: 2}
 	g := board.Coord{X: 2, Y: 0}
 	h := board.Coord{X: 2, Y: 1}
 	i := board.Coord{X: 2, Y: 2}
@@ -34,7 +34,7 @@ func main() {
 
 	board.PrintBoard(Board)
 	printError(err)
-	board.Check(&Board)
+	fmt.Print(board.Check(&Board))
 }
 
 //funcion que haga la siguiente linea:
