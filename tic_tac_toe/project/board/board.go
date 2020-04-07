@@ -87,20 +87,30 @@ func Check(board *[3][3]string) string {
 	o, x := 0, 1
 	for row := 0; row < len(board); row++ {
 		for column := 0; column < len(board); column++ {
-			itemA := board[row][column]
-			itemB := board[column][row]
-			if itemA == "#" || itemB == "#" {
+			fmt.Printf("%+v\n", numberOf)
+			fmt.Printf("%+v %+v\n", row, column)
+			rowCheck := board[row][column]
+			columnCheck := board[column][row]
+			if rowCheck == "#" && columnCheck == "#" {
 				continue
 				//esto sigue al siguiente column
 			}
-			if itemA == "X" || itemB == "X" {
+
+			if rowCheck == "X" || columnCheck == "X" {
 				player = x
-			} else if itemA == "O" || itemB == "O" {
+			} else if rowCheck == "O" || columnCheck == "O" {
 				player = o
 			}
-
-			numberOf.row[player]++
-			numberOf.column[player]++
+			//el player que tenga la jugada...
+			//11 10 01
+			if rowCheck == columnCheck {
+				numberOf.column[player]++
+				numberOf.row[player]++
+			} else if rowCheck != "#" {
+				numberOf.row[player]++
+			} else {
+				numberOf.column[player]++
+			}
 
 			if row == column {
 				numberOf.diag1[player]++
@@ -111,7 +121,6 @@ func Check(board *[3][3]string) string {
 
 		}
 
-		fmt.Printf("%+v\n", numberOf)
 		if numberOf.row[x] == len(board) {
 			return "Row! X won!"
 		} else if numberOf.row[o] == len(board) {
