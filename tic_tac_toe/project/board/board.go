@@ -39,36 +39,41 @@ func PrintBoard(board [3][3]string) {
 }
 
 /*
-*Makes the play receiving the letter, the coordinates for the placing
-*and the board itself
+*Creates a struct for coordinates
+**/
+type Coord struct {
+	X uint
+	Y uint
+}
+
+/*
+*Makes the play receiving the char, the coordinates for the placing
+*and the board itself. Returns an error
  */
-func Play(char string, coor Coord, board *[3][3]string) error {
+
+func Play(char string, coordinate Coord, board *[3][3]string) error {
 	//modifico el board segun la letra y la coordenada
-	//este es el board vacio, check
-	//coloco el string
+	//verifico que el segundo indice sea menor al board, coloco el string
 	//devuelve board nuevo
 	//faltaria auth
-	x := int(coor.X)
-	y := int(coor.Y)
+	x := int(coordinate.X) //column
+	y := int(coordinate.Y) //row
+	player := strings.ToUpper(char)
+	//si la letra es la correspondiente
+	if player != "X" && player != "O" {
+		return errors.New(fmt.Sprintf("que quere vo"))
+	}
+	//si las coordenadas no se pasan
 	if l := len(board); x < l && y < l {
-		if m := strings.ToUpper(char); m == "X" {
-			if board[x][y] == "#" {
-				board[x][y] = m
-			} else {
-				return errors.New(fmt.Sprintf("coordinate {%d %d} Occupied ! Try other coordinate again ", x, y))
-			}
+		if board[y][x] == "#" {
+			board[y][x] = player
 		} else {
-			return errors.New("Hey, that' not an X my buddy")
+			return errors.New(fmt.Sprintf("coordinate {%d %d} Occupied ! Try other place again", x, y))
 		}
 	} else {
 		return errors.New(fmt.Sprintf("{%d %d} Oh oh, there is no board there my friend :/", x, y))
 	}
 	return nil
-}
-
-type Coord struct {
-	X uint
-	Y uint
 }
 
 //podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
@@ -87,7 +92,16 @@ func Check(board *[3][3]string) string {
 	o, x := 0, 1
 	for row := 0; row < len(board); row++ {
 		for column := 0; column < len(board); column++ {
-			fmt.Printf("%+v\n", numberOf)
+			if row > 1 {
+				if numberOf.column[x] == len(board) {
+					return "Row! X won!"
+				} else if numberOf.column[o] == len(board) {
+					return "Row! O won!"
+				} else {
+					numberOf.column[x] = 0
+					numberOf.column[o] = 0
+				}
+			}
 			fmt.Printf("%+v %+v\n", row, column)
 			rowCheck := board[row][column]
 			columnCheck := board[column][row]
@@ -103,14 +117,8 @@ func Check(board *[3][3]string) string {
 			}
 			//el player que tenga la jugada...
 			//11 10 01
-			if rowCheck == columnCheck {
-				numberOf.column[player]++
-				numberOf.row[player]++
-			} else if rowCheck != "#" {
-				numberOf.row[player]++
-			} else {
-				numberOf.column[player]++
-			}
+			numberOf.column[player]++
+			numberOf.row[player]++
 
 			if row == column {
 				numberOf.diag1[player]++
@@ -118,7 +126,7 @@ func Check(board *[3][3]string) string {
 			if row+column == len(board)-1 {
 				numberOf.diag2[player]++
 			}
-
+			fmt.Printf("%+v\n", numberOf)
 		}
 
 		if numberOf.row[x] == len(board) {

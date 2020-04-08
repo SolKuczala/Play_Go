@@ -11,9 +11,9 @@ var Board [3][3]string
 func main() {
 	Board = board.New()
 	plays := []string{
-		"x", "o", "",
-		"", "x", "",
-		"", "x", "o",
+		"x", "o", "o",
+		"o", "x", "o",
+		"x", "x", "o",
 	}
 	for i, play := range plays {
 		coor := board.Coord{X: uint(i % 3), Y: uint(i / 3)}
@@ -22,7 +22,6 @@ func main() {
 		fmt.Printf("%s\n", board.Check(&Board))
 		board.PrintBoard(Board)
 	}
-
 }
 
 //funcion que haga la siguiente linea:
