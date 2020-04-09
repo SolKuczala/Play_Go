@@ -105,27 +105,48 @@ func Check(board *[3][3]string) string {
 			fmt.Printf("%+v %+v\n", row, column)
 			rowCheck := board[row][column]
 			columnCheck := board[column][row]
+			//si los dos tienen # seguimos al siguiente loop
+			//sino alguno de los dos tenia
 			if rowCheck == "#" && columnCheck == "#" {
 				continue
 				//esto sigue al siguiente column
 			}
+			//si los indices son iguales:chequeamos uno porque es un lugar solo
+			//sino veo de a dos places
+			if row == column {
+				if rowCheck == "X" || columnCheck == "X" {
+					player = x
+				} else if rowCheck == "O" || columnCheck == "O" {
+					player = o
+				}
 
-			if rowCheck == "X" || columnCheck == "X" {
-				player = x
-			} else if rowCheck == "O" || columnCheck == "O" {
-				player = o
+				numberOf.column[player]++
+				numberOf.row[player]++
+
+				if row == column {
+					numberOf.diag1[player]++
+				}
+				if row+column == len(board)-1 {
+					numberOf.diag2[player]++
+				}
+
+			} else {
+				player1 := o
+				player2 := x
 			}
+			//cual tiene y que tiene?
+			//el que no es distinto de # que es y donde esta?
+			//si rc x ,rc o{adherir corr} - si cc x, cc o{ac} - si los dos son o uno o el otro
+			//los dos ++
+
+			if rowCheck != "#" && columnCheck != "#" {
+				numberOf.column[player1]++
+				numberOf.row[player2]++
+			}
+
 			//el player que tenga la jugada...
 			//11 10 01
-			numberOf.column[player]++
-			numberOf.row[player]++
 
-			if row == column {
-				numberOf.diag1[player]++
-			}
-			if row+column == len(board)-1 {
-				numberOf.diag2[player]++
-			}
 			fmt.Printf("%+v\n", numberOf)
 		}
 
