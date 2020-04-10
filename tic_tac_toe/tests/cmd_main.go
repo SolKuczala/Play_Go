@@ -12,8 +12,8 @@ func main() {
 	Board = board.New()
 	plays := []string{
 		"x", "o", "o",
-		"o", "x", "o",
-		"x", "x", "o",
+		"o", "o", "x",
+		"o", "x", "x",
 	}
 	for i, play := range plays {
 		coor := board.Coord{X: uint(i % 3), Y: uint(i / 3)}

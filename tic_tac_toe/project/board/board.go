@@ -6,12 +6,12 @@ import (
 	"strings"
 )
 
-/*
-*Initializes and returns an empty board.
- */
+var o, x = 0, 1
+
+/*New initializes and returns an empty board.*/
 //TODO: cambiar el string a slice y el nombre
 func New() [3][3]string {
-	var matrix [3][3]string //[[, , ],[ , , ],[ , , ]]
+	var matrix [3][3]string //[[ , , ],[ , , ],[ , , ]]
 
 	for i := 0; i < len(matrix); i++ {
 		//me trae cada aarray de matrix
@@ -24,9 +24,7 @@ func New() [3][3]string {
 	return matrix
 }
 
-/*
-*Prints a board nicely in cmd-line.
- */
+/*PrintBoard prints a board nicely in cmd-line.*/
 //TODO cambiar el nombre
 func PrintBoard(board [3][3]string) {
 	for i, innerArray := range board {
@@ -38,24 +36,21 @@ func PrintBoard(board [3][3]string) {
 	fmt.Println("_")
 }
 
-/*
-*Creates a struct for coordinates
-**/
+/*Coord Creates a struct for coordinates*/
 type Coord struct {
 	X uint
 	Y uint
 }
 
-/*
-*Makes the play receiving the char, the coordinates for the placing
-*and the board itself. Returns an error
- */
-
+/*Play place the play, receiving the char, the coordinates
+and the board itself. Returns an error if something goes wrong,otherwise nothing*/
 func Play(char string, coordinate Coord, board *[3][3]string) error {
 	//modifico el board segun la letra y la coordenada
-	//verifico que el segundo indice sea menor al board, coloco el string
+	//verifico que los indices sea menor al board, coloco el string
 	//devuelve board nuevo
 	//faltaria auth
+
+	//porque lo convierto a int?
 	x := int(coordinate.X) //column
 	y := int(coordinate.Y) //row
 	player := strings.ToUpper(char)
@@ -80,92 +75,105 @@ func Play(char string, coordinate Coord, board *[3][3]string) error {
 //el segundo for
 func Check(board *[3][3]string) string {
 	//determina si alguien gana o no
-	// TO DO: no me esta contando bien diag 2 y falta que cuente las rows
+	//
 	type conditions struct {
 		row    [2]int
 		column [2]int
 		diag1  [2]int
 		diag2  [2]int
 	}
-	var player int
-	var numberOf conditions
+	var plays conditions
 	o, x := 0, 1
+	win := len(board)
+
 	for row := 0; row < len(board); row++ {
 		for column := 0; column < len(board); column++ {
-			if row > 1 {
-				if numberOf.column[x] == len(board) {
-					return "Row! X won!"
-				} else if numberOf.column[o] == len(board) {
-					return "Row! O won!"
-				} else {
-					numberOf.column[x] = 0
-					numberOf.column[o] = 0
-				}
-			}
-			fmt.Printf("%+v %+v\n", row, column)
-			rowCheck := board[row][column]
-			columnCheck := board[column][row]
-			//si los dos tienen # seguimos al siguiente loop
-			//sino alguno de los dos tenia
-			if rowCheck == "#" && columnCheck == "#" {
+			//primero voy a mirar 00 y despue27
+			//row va ir por todos los rows
+			//column va a ir por todas las columns
+
+			//aca me voy a leer lo que viene por row y column(el string)
+
+			rowPick := board[row][column]
+			columnPick := board[column][row]
+			if rowPick == "#" && columnPick == "#" {
 				continue
-				//esto sigue al siguiente column
+				//esto va al column++
 			}
-			//si los indices son iguales:chequeamos uno porque es un lugar solo
-			//sino veo de a dos places
+
+			switch rowPick {
+			case "X":
+				plays.row[x]++
+			case "O":
+				plays.row[o]++
+			}
+
+			switch columnPick {
+			case "X":
+				plays.column[x]++
+			case "O":
+				plays.column[o]++
+			}
+
 			if row == column {
-				if rowCheck == "X" || columnCheck == "X" {
-					player = x
-				} else if rowCheck == "O" || columnCheck == "O" {
-					player = o
+				if rowPick == "X" {
+					plays.diag1[x]++
+				} else {
+					plays.diag1[o]++
 				}
-
-				numberOf.column[player]++
-				numberOf.row[player]++
-
-				if row == column {
-					numberOf.diag1[player]++
-				}
-				if row+column == len(board)-1 {
-					numberOf.diag2[player]++
-				}
-
-			} else {
-				player1 := o
-				player2 := x
-			}
-			//cual tiene y que tiene?
-			//el que no es distinto de # que es y donde esta?
-			//si rc x ,rc o{adherir corr} - si cc x, cc o{ac} - si los dos son o uno o el otro
-			//los dos ++
-
-			if rowCheck != "#" && columnCheck != "#" {
-				numberOf.column[player1]++
-				numberOf.row[player2]++
 			}
 
-			//el player que tenga la jugada...
-			//11 10 01
+			if row+column == len(board)-1 {
+				if rowPick == "X" {
+					plays.diag2[x]++
+				} else {
+					plays.diag2[o]++
+				}
+			}
+			//si los dos no son hash
+			/*if rowCheck != "#" && columnCheck != "#" {
+				plays.column[player1]++
+				plays.row[player2]++
+			}*/
+			//fmt.Printf("%+v\n", plays)
+			fmt.Printf("%+v %+v\n", row, column)
 
-			fmt.Printf("%+v\n", numberOf)
+		} // end inner for - recorri una fila y una columna
+
+		//check si en row hay 3 iguales
+		if plays.row[o] == win {
+			return "O wins"
+		}
+		plays.row[o] = 0
+
+		if plays.row[x] == win {
+			return "X wins"
+		}
+		plays.row[x] = 0
+		if plays.column[o] == win {
+			return "O wins"
+		}
+		plays.column[o] = 0
+
+		if plays.column[x] == win {
+			return "X wins"
+		}
+		plays.column[x] = 0
+
+		if plays.diag1[x] == win {
+			return "X wins"
 		}
 
-		if numberOf.row[x] == len(board) {
-			return "Row! X won!"
-		} else if numberOf.row[o] == len(board) {
-			return "Row! O won!"
-		} else {
-			numberOf.row[x] = 0
-			numberOf.row[o] = 0
+		if plays.diag1[o] == win {
+			return "O wins"
 		}
-	}
 
-	if numberOf.diag1[x] == len(board) || numberOf.diag2[x] == len(board) {
-		return "Diagonal! X won!"
-	} else if numberOf.diag1[o] == len(board) || numberOf.diag2[o] == len(board) {
-		return "Diagonal! O won!"
-	}
+		if plays.diag2[x] == win {
+			return "X wins"
+		}
+		if plays.diag2[o] == win {
+			return "O wins"
+		}
+	} //end of for
 	return "no win, play again?"
 }
-
-// other way to make types : type Coord [2]int
