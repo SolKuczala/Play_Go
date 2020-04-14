@@ -9,24 +9,24 @@ import (
 var o, x = 0, 1
 
 /*New initializes and returns an empty board.*/
-//TODO: cambiar el string a slice y el nombre
-func New() [3][3]string {
-	var matrix [3][3]string //[[ , , ],[ , , ],[ , , ]]
+//TODO: recibe dos numeros(o un struct)
+func New(size int) [][]string {
+	var matrix [][]string //[]
 
-	for i := 0; i < len(matrix); i++ {
-		//me trae cada aarray de matrix
-		for j := 0; j < len(matrix[i]); j++ {
-			//me trae 1 valor de cada array
-			matrix[i][j] = "#"
+	for i := 0; i < size; i++ {
+		matrix = append(matrix, []string{}) //append another slice, size times
+		for j := 0; j < size; j++ {
+			matrix[i] = append(matrix[i], "#")
 		}
 	}
-	//fmt.Printf("%+v", matrix)
+	fmt.Println(matrix)
+
 	return matrix
 }
 
 /*PrintBoard prints a board nicely in cmd-line.*/
 //TODO cambiar el nombre
-func PrintBoard(board [3][3]string) {
+func PrintBoard(board [][]string) {
 	for i, innerArray := range board {
 		for j, _ := range innerArray {
 			fmt.Printf(board[i][j])
@@ -44,10 +44,7 @@ type Coord struct {
 
 /*Play place the play, receiving the char, the coordinates
 and the board itself. Returns an error if something goes wrong,otherwise nothing*/
-func Play(char string, coordinate Coord, board *[3][3]string) error {
-	//modifico el board segun la letra y la coordenada
-	//verifico que los indices sea menor al board, coloco el string
-	//devuelve board nuevo
+func Play(char string, coordinate Coord, board *[][]string) error {
 	//faltaria auth
 
 	//porque lo convierto a int?
@@ -56,24 +53,24 @@ func Play(char string, coordinate Coord, board *[3][3]string) error {
 	player := strings.ToUpper(char)
 	//si la letra es la correspondiente
 	if player != "X" && player != "O" {
-		return errors.New(fmt.Sprintf("que quere vo"))
+		return errors.New("que quere vo")
 	}
 	//si las coordenadas no se pasan
-	if l := len(board); x < l && y < l {
+	if l := len(*board); x < l && y < l {
 		if board[y][x] == "#" {
 			board[y][x] = player
 		} else {
-			return errors.New(fmt.Sprintf("coordinate {%d %d} Occupied ! Try other place again", x, y))
+			return fmt.Errorf("coordinate {%d %d} Occupied ! Try other place again", x, y)
 		}
 	} else {
-		return errors.New(fmt.Sprintf("{%d %d} Oh oh, there is no board there my friend :/", x, y))
+		return fmt.Errorf("{%d %d} Oh oh, there is no board there my friend :/", x, y)
 	}
 	return nil
 }
 
-//podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
+//Check podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
 //el segundo for
-func Check(board *[3][3]string) string {
+func Check(board *[][]string) string {
 	//determina si alguien gana o no
 	//
 	type conditions struct {
@@ -130,12 +127,7 @@ func Check(board *[3][3]string) string {
 					plays.diag2[o]++
 				}
 			}
-			//si los dos no son hash
-			/*if rowCheck != "#" && columnCheck != "#" {
-				plays.column[player1]++
-				plays.row[player2]++
-			}*/
-			//fmt.Printf("%+v\n", plays)
+
 			fmt.Printf("%+v %+v\n", row, column)
 
 		} // end inner for - recorri una fila y una columna

@@ -6,10 +6,11 @@ import (
 	"../project/board"
 )
 
-var Board [3][3]string
+/*Board is the new board imported*/
+var Board [][]string
 
 func main() {
-	Board = board.New()
+	Board = board.New(3)
 	plays := []string{
 		"x", "o", "o",
 		"o", "o", "x",
