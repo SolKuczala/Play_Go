@@ -28,7 +28,7 @@ func New(size int) [][]string {
 //TODO cambiar el nombre
 func PrintBoard(board [][]string) {
 	for i, innerArray := range board {
-		for j, _ := range innerArray {
+		for j := range innerArray {
 			fmt.Printf(board[i][j])
 		}
 		fmt.Println("")
@@ -46,19 +46,24 @@ type Coord struct {
 and the board itself. Returns an error if something goes wrong,otherwise nothing*/
 func Play(char string, coordinate Coord, board *[][]string) error {
 	//faltaria auth
+	fmt.Println(board)
+	fmt.Println(*board) //da el valor
+	fmt.Println(&board) //da la dire
 
-	//porque lo convierto a int?
 	x := int(coordinate.X) //column
 	y := int(coordinate.Y) //row
 	player := strings.ToUpper(char)
 	//si la letra es la correspondiente
 	if player != "X" && player != "O" {
-		return errors.New("que quere vo")
+		return errors.New("not the play")
 	}
+	matrix := *board
+	fmt.Println(matrix)
+
 	//si las coordenadas no se pasan
 	if l := len(*board); x < l && y < l {
-		if board[y][x] == "#" {
-			board[y][x] = player
+		if matrix[y][x] == "#" {
+			matrix[y][x] = player
 		} else {
 			return fmt.Errorf("coordinate {%d %d} Occupied ! Try other place again", x, y)
 		}
@@ -81,18 +86,18 @@ func Check(board *[][]string) string {
 	}
 	var plays conditions
 	o, x := 0, 1
-	win := len(board)
+	win := len(*board)
 
-	for row := 0; row < len(board); row++ {
-		for column := 0; column < len(board); column++ {
+	for row := 0; row < len(*board); row++ {
+		for column := 0; column < len(*board); column++ {
 			//primero voy a mirar 00 y despue27
 			//row va ir por todos los rows
 			//column va a ir por todas las columns
 
 			//aca me voy a leer lo que viene por row y column(el string)
-
-			rowPick := board[row][column]
-			columnPick := board[column][row]
+			matrix := *board
+			rowPick := matrix[row][column]
+			columnPick := matrix[column][row]
 			if rowPick == "#" && columnPick == "#" {
 				continue
 				//esto va al column++
@@ -120,7 +125,7 @@ func Check(board *[][]string) string {
 				}
 			}
 
-			if row+column == len(board)-1 {
+			if row+column == len(*board)-1 {
 				if rowPick == "X" {
 					plays.diag2[x]++
 				} else {
@@ -130,9 +135,10 @@ func Check(board *[][]string) string {
 
 			fmt.Printf("%+v %+v\n", row, column)
 
-		} // end inner for - recorri una fila y una columna
+		} // end inner for
 
 		//check si en row hay 3 iguales
+
 		if plays.row[o] == win {
 			return "O wins"
 		}
@@ -142,6 +148,8 @@ func Check(board *[][]string) string {
 			return "X wins"
 		}
 		plays.row[x] = 0
+
+		//check si column
 		if plays.column[o] == win {
 			return "O wins"
 		}
@@ -152,13 +160,15 @@ func Check(board *[][]string) string {
 		}
 		plays.column[x] = 0
 
+		//check si diag1
 		if plays.diag1[x] == win {
 			return "X wins"
 		}
-
 		if plays.diag1[o] == win {
 			return "O wins"
 		}
+
+		//check si diag2
 
 		if plays.diag2[x] == win {
 			return "X wins"

@@ -12,8 +12,8 @@ var Board [][]string
 func main() {
 	Board = board.New(3)
 	plays := []string{
-		"x", "o", "o",
-		"o", "o", "x",
+		"o", "o", "o",
+		"o", "x", "x",
 		"o", "x", "x",
 	}
 	for i, play := range plays {
