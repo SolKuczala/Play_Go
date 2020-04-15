@@ -58,22 +58,24 @@ type Coord struct {
 
 /*Play place the play, receiving the char, the coordinates
 and the board itself.returns an error(string) if incorrect player turn*/
-func Play(char string, coordinate Coord, game *Game) error {
+func Play(char string, coordinate Coord, game *Game) (string, error) {
 	//primer jugadeta si esta lleno de #: guardo el jugador
 	//si ya tiene algo, compareta del char con lastplayed
 	//
 	if game.lastplayed == noPlayer || char != game.lastplayed {
 		err := playCheck(char, coordinate, &game.board)
 		if err != nil {
-			return err
+			return "", err
 		}
 		game.lastplayed = char
 	} else {
-		return errors.New("Hey, let the other play too :)")
+		return "", errors.New("Hey, let the other play too :)")
 	}
-	check(game)
-	return nil
-
+	result := check(game)
+	if result != "" {
+		fmt.Printf(result)
+	}
+	return "", nil
 }
 
 /*called by Play.check if the player was correct and place the play otherwise returns error*/
