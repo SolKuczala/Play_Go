@@ -1,4 +1,4 @@
-package board
+package tictactoe
 
 import (
 	"errors"
@@ -6,30 +6,44 @@ import (
 	"strings"
 )
 
+const playerX string = "X"
+const playerO string = "O"
+const noPlayer string = "#"
+
 var o, x = 0, 1
 
-/*New initializes and returns an empty board.*/
-//TODO: recibe dos numeros(o un struct)
-func New(size int) [][]string {
+/*Game containin board type [][]string,	lastplayed type string,
+winner type bool*/
+type Game struct {
+	board      [][]string
+	lastplayed string
+	winner     bool
+}
+
+/*NewGame initializes and returns game struct*/
+func NewGame(size int) Game {
 	var matrix [][]string //[]
 
 	for i := 0; i < size; i++ {
 		matrix = append(matrix, []string{}) //append another slice, size times
 		for j := 0; j < size; j++ {
-			matrix[i] = append(matrix[i], "#")
+			matrix[i] = append(matrix[i], noPlayer)
 		}
 	}
 	fmt.Println(matrix)
+	var Game Game
+	Game.board = matrix
+	Game.lastplayed = noPlayer
+	Game.winner = false
 
-	return matrix
+	return Game
 }
 
 /*PrintBoard prints a board nicely in cmd-line.*/
-//TODO cambiar el nombre
-func PrintBoard(board [][]string) {
-	for i, innerArray := range board {
+func PrintBoard(game *Game) {
+	for i, innerArray := range game.board {
 		for j := range innerArray {
-			fmt.Printf(board[i][j])
+			fmt.Printf(game.board[i][j])
 		}
 		fmt.Println("")
 	}
@@ -43,26 +57,38 @@ type Coord struct {
 }
 
 /*Play place the play, receiving the char, the coordinates
-and the board itself. Returns an error if something goes wrong,otherwise nothing*/
-func Play(char string, coordinate Coord, board *[][]string) error {
-	//faltaria auth
-	fmt.Println(board)
-	fmt.Println(*board) //da el valor
-	fmt.Println(&board) //da la dire
+and the board itself.returns an error(string) if incorrect player turn*/
+func Play(char string, coordinate Coord, game *Game) error {
+	//primer jugadeta si esta lleno de #: guardo el jugador
+	//si ya tiene algo, compareta del char con lastplayed
+	//
+	if game.lastplayed == noPlayer || char != game.lastplayed {
+		err := playCheck(char, coordinate, &game.board)
+		if err != nil {
+			return err
+		}
+		game.lastplayed = char
+	} else {
+		return errors.New("Hey, let the other play too :)")
+	}
+	check(game)
+	return nil
 
+}
+
+/*called by Play.check if the player was correct and place the play otherwise returns error*/
+func playCheck(char string, coordinate Coord, board *[][]string) error {
 	x := int(coordinate.X) //column
 	y := int(coordinate.Y) //row
 	player := strings.ToUpper(char)
 	//si la letra es la correspondiente
-	if player != "X" && player != "O" {
-		return errors.New("not the play")
+	if player != playerX && player != playerO {
+		return errors.New("not a valid player")
 	}
 	matrix := *board
-	fmt.Println(matrix)
-
 	//si las coordenadas no se pasan
 	if l := len(*board); x < l && y < l {
-		if matrix[y][x] == "#" {
+		if matrix[y][x] == noPlayer {
 			matrix[y][x] = player
 		} else {
 			return fmt.Errorf("coordinate {%d %d} Occupied ! Try other place again", x, y)
@@ -73,11 +99,8 @@ func Play(char string, coordinate Coord, board *[][]string) error {
 	return nil
 }
 
-//Check podria llegar a tener un struct para el tipo de dato que recibe la matriz...para mejorar
-//el segundo for
-func Check(board *[][]string) string {
-	//determina si alguien gana o no
-	//
+/*Check the game for winners*/
+func check(game *Game) string {
 	type conditions struct {
 		row    [2]int
 		column [2]int
@@ -86,47 +109,44 @@ func Check(board *[][]string) string {
 	}
 	var plays conditions
 	o, x := 0, 1
-	win := len(*board)
+	win := len(game.board)
 
-	for row := 0; row < len(*board); row++ {
-		for column := 0; column < len(*board); column++ {
-			//primero voy a mirar 00 y despue27
-			//row va ir por todos los rows
-			//column va a ir por todas las columns
+	for row := 0; row < len(game.board); row++ {
+		for column := 0; column < len(game.board); column++ {
 
 			//aca me voy a leer lo que viene por row y column(el string)
-			matrix := *board
+			matrix := game.board
 			rowPick := matrix[row][column]
 			columnPick := matrix[column][row]
-			if rowPick == "#" && columnPick == "#" {
+			if rowPick == noPlayer && columnPick == noPlayer {
 				continue
 				//esto va al column++
 			}
 
 			switch rowPick {
-			case "X":
+			case playerX:
 				plays.row[x]++
-			case "O":
+			case playerO:
 				plays.row[o]++
 			}
 
 			switch columnPick {
-			case "X":
+			case playerX:
 				plays.column[x]++
-			case "O":
+			case playerO:
 				plays.column[o]++
 			}
 
 			if row == column {
-				if rowPick == "X" {
+				if rowPick == playerX {
 					plays.diag1[x]++
 				} else {
 					plays.diag1[o]++
 				}
 			}
 
-			if row+column == len(*board)-1 {
-				if rowPick == "X" {
+			if row+column == len(game.board)-1 {
+				if rowPick == playerX {
 					plays.diag2[x]++
 				} else {
 					plays.diag2[o]++
@@ -140,42 +160,44 @@ func Check(board *[][]string) string {
 		//check si en row hay 3 iguales
 
 		if plays.row[o] == win {
-			return "O wins"
+			return playerO
 		}
 		plays.row[o] = 0
 
 		if plays.row[x] == win {
-			return "X wins"
+			return playerX
 		}
 		plays.row[x] = 0
 
 		//check si column
 		if plays.column[o] == win {
-			return "O wins"
+			return playerO
 		}
 		plays.column[o] = 0
 
 		if plays.column[x] == win {
-			return "X wins"
+			return playerX
 		}
 		plays.column[x] = 0
 
 		//check si diag1
 		if plays.diag1[x] == win {
-			return "X wins"
+			return playerX
 		}
 		if plays.diag1[o] == win {
-			return "O wins"
+			return playerO
 		}
 
 		//check si diag2
 
 		if plays.diag2[x] == win {
-			return "X wins"
+			return playerX
 		}
 		if plays.diag2[o] == win {
-			return "O wins"
+			return playerO
 		}
 	} //end of for
 	return "no win, play again?"
 }
+
+/*fmt.Sprintf("%s wins", variable q contiene un string)*/

@@ -3,30 +3,29 @@ package main
 import (
 	"fmt"
 
-	"../project/board"
+	T "../project/tictactoe"
 )
 
-/*Board is the new board imported*/
-var Board [][]string
+var gameStruct T.Game
 
 func main() {
-	Board = board.New(3)
+	gameStruct = T.NewGame(3)
 	plays := []string{
-		"o", "o", "o",
+		"o", "x", "x",
 		"o", "x", "x",
 		"o", "x", "x",
 	}
 	for i, play := range plays {
-		coor := board.Coord{X: uint(i % 3), Y: uint(i / 3)}
-		err := board.Play(play, coor, &Board)
-		printError(err)
-		fmt.Printf("%s\n", board.Check(&Board))
-		board.PrintBoard(Board)
+		coor := T.Coord{X: uint(i % 3), Y: uint(i / 3)}
+		_, err := T.Play(play, coor, &gameStruct)
+		printIfError(err)
+		T.PrintBoard(&gameStruct)
 	}
+	T.PrintBoard(&gameStruct)
 }
 
 //funcion que haga la siguiente linea:
-func printError(err error) {
+func printIfError(err error) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
