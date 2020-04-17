@@ -27,8 +27,13 @@ func main() {
 		case optNew:
 			fmt.Println("Which size?") //int
 			strNum := prompt.Input("new> ", newGameCompleter)
-			num, _ := s.Atoi(strNum)
-			myfun(num)
+			num, err := s.Atoi(strNum)
+			if err == nil {
+				fmt.Printf("We need numbers ('-.-)\n")
+				continue
+			} else {
+				myfun(num)
+			}
 		case optPlay:
 			fmt.Println("Play X or O")
 			strings := prompt.Input("play> ", playCompleter)
@@ -41,6 +46,11 @@ func main() {
 				continue
 			}
 			str := str.Split(coor, ":")
+			//si tengo menos o mas de dos
+			if len(str) < 2 {
+				fmt.Printf("I'm missing something :/\n")
+				continue
+			}
 			myfunc3(str)
 		case optExit:
 			playing = false
