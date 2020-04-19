@@ -35,23 +35,33 @@ func main() {
 				myfun(num)
 			}
 		case optPlay:
+			//mientras no haya error o no haya ganador?
 			fmt.Println("Play X or O")
 			strings := prompt.Input("play> ", playCompleter)
 			myfunc2(strings)
 			fmt.Println("Choose coordinates. Example >> 0:1 Row first Column second")
 			coor := prompt.Input("place> ", placeCompleter)
-			//fmt.Printf(coor)
+			//si no le mando nada
 			if len(coor) == 0 {
 				fmt.Printf("pero yo no veo nada!\n")
 				continue
 			}
+			//obtengo un array de dos cosas
 			str := str.Split(coor, ":")
 			//si tengo menos o mas de dos
-			if len(str) < 2 {
-				fmt.Printf("I'm missing something :/\n")
+			if len(str) < 2 || len(str) > 2 {
+				fmt.Printf("Am I missing something? :/\n")
 				continue
 			}
-			myfunc3(str)
+			num1, err := s.Atoi(str[0])
+			num2, err := s.Atoi(str[1])
+
+			if err != nil {
+				fmt.Printf("no es un numeretto >:[\n")
+				continue
+			}
+			myfunc3(num1, num2)
+			continue
 		case optExit:
 			playing = false
 		}
@@ -100,7 +110,7 @@ func myfunc2(player string) {
 	//call my func
 	//prompt play until myfunc return winner
 }
-func myfunc3(coor []string) {
-
-	fmt.Printf("mira que lindos estos dos numerettos %v %v\n", coor[0], coor[1])
+func myfunc3(num1, num2 int) {
+	fmt.Printf("mira que lindos estos dos numerettos %v %v\n", num1, num2)
+	//call my func donde devuelve la jugadeta
 }
