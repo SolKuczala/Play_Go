@@ -39,33 +39,42 @@ func main() {
 			fmt.Println("Play X or O")
 			strings := prompt.Input("play> ", playCompleter)
 			myfunc2(strings)
-			fmt.Println("Choose coordinates. Example >> 0:1 Row first Column second")
-			coor := prompt.Input("place> ", placeCompleter)
-			//si no le mando nada
-			if len(coor) == 0 {
-				fmt.Printf("pero yo no veo nada!\n")
-				continue
-			}
-			//obtengo un array de dos cosas
-			str := str.Split(coor, ":")
-			//si tengo menos o mas de dos
-			if len(str) < 2 || len(str) > 2 {
-				fmt.Printf("Am I missing something? :/\n")
-				continue
-			}
-			num1, err := s.Atoi(str[0])
-			num2, err := s.Atoi(str[1])
+			jugadaIncorrecta := true
+			var num1, num2 int
+			var err error
+			for jugadaIncorrecta {
 
-			if err != nil {
-				fmt.Printf("no es un numeretto >:[\n")
-				continue
-			}
-			myfunc3(num1, num2)
-			continue
+				fmt.Println("Choose coordinates. Example >> 0:1 Row first Column second")
+				coor := prompt.Input("place> ", placeCompleter)
+
+				if len(coor) == 0 {
+					fmt.Printf("pero yo no veo nada!\n")
+					continue
+				}
+				//obtengo un array de dos cosas
+				str := str.Split(coor, ":")
+				//si tengo menos o mas de dos
+				if len(str) < 2 || len(str) > 2 {
+					fmt.Printf("Am I missing something? :/\n")
+					continue
+				}
+				num1, err = s.Atoi(str[0])
+				num2, err = s.Atoi(str[1])
+
+				if err != nil {
+					fmt.Printf("no es un numeretto >:[\n")
+					continue
+				}
+				jugadaIncorrecta = false
+			} //end of 2nd while
+			//while jugadaIncorrecta = false segui corriendo esto
+			miraKlendosNumeretos(num1, num2)
+			continue //sale a opciones
 		case optExit:
 			playing = false
-		}
-	}
+		} //end of switch
+
+	} //end of while
 	fmt.Printf("Ci vediamo dopo")
 
 }
@@ -91,7 +100,7 @@ func newGameCompleter(numero prompt.Document) []prompt.Suggest {
 func playCompleter(player prompt.Document) []prompt.Suggest {
 	s := []prompt.Suggest{
 		{Text: "X", Description: "player Japan"},
-		{Text: "O", Description: "player good"},
+		{Text: "O", Description: "player Sun"},
 	}
 	return prompt.FilterHasPrefix(s, player.GetWordBeforeCursor(), true)
 }
@@ -106,11 +115,11 @@ func myfun(num int) {
 	//call my func
 }
 func myfunc2(player string) {
-	fmt.Printf("%s has played!\n", player)
+	fmt.Printf("%s selected!\n The other is the contrary :)\n", player)
 	//call my func
 	//prompt play until myfunc return winner
 }
-func myfunc3(num1, num2 int) {
+func miraKlendosNumeretos(num1, num2 int) {
 	fmt.Printf("mira que lindos estos dos numerettos %v %v\n", num1, num2)
 	//call my func donde devuelve la jugadeta
 }
