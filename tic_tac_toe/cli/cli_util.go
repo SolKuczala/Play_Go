@@ -11,42 +11,80 @@ import (
 var optNew = "new"
 var optPlay = "play"
 var optExit = "exit"
+var softExit = "exit main menu"
+var hardExit = "exit game"
+
+func getSizeFromUser() (int, error) {
+	fmt.Println("Which size?") //int
+	//pido el size del tablero
+	strNum := prompt.Input("new> ", newGameCompleter)
+	num, err := s.Atoi(strNum)
+	if err != nil {
+		fmt.Printf("We need numbers ('-.-)\n")
+	}
+	return num, err
+}
 
 func main() {
 	fmt.Println("Tic Tac Toe , Welcome!\n What do you want to do? :)")
+	//while para el juego entero
 	playing := true
+
 	for playing {
-		selectedOpt := prompt.Input("> ", tabCompleter)
+		selectedOpt := prompt.Input("begin> ", tabCompleter)
 		if selectedOpt == "" {
 			fmt.Println("nada por aqui nada por alla...")
 		} else {
-			fmt.Println("you selected " + selectedOpt)
+			fmt.Println("you selected " + selectedOpt + "\nPress tab to see options")
 		} //me devuelve un string "> selectedOpt"
 
 		switch selectedOpt {
+
 		case optNew:
-			fmt.Println("Which size?") //int
-			strNum := prompt.Input("new> ", newGameCompleter)
-			num, err := s.Atoi(strNum)
-			if err == nil {
-				fmt.Printf("We need numbers ('-.-)\n")
-				continue
-			} else {
-				myfun(num)
+			needSize := true
+
+			for needSize {
+				size, err := getSizeFromUser()
+				if err != nil {
+					continue
+				}
+				myfun(size)
+				needSize = false
 			}
+
 		case optPlay:
 			//mientras no haya error o no haya ganador?
-			fmt.Println("Play X or O")
-			strings := prompt.Input("play> ", playCompleter)
-			myfunc2(strings)
-			jugadaIncorrecta := true
+			missPlayer := true
+
+			for missPlayer {
+				fmt.Println("Play X or O")
+				strings := prompt.Input("play> ", playCompleter)
+				//checkear jugador
+				if strings != "" {
+					myfunc2(strings)
+					missPlayer = false
+				} else {
+					fmt.Printf("At least a word man...\n")
+					continue
+				}
+			}
+			//una vez elegido el jugador>>
+			missCoor := true
+
 			var num1, num2 int
 			var err error
-			for jugadaIncorrecta {
 
-				fmt.Println("Choose coordinates. Example >> 0:1 Row first Column second")
+			for missCoor {
+
+				fmt.Println("Choose coordinates. Example >> 0:1 Row first, Column second")
 				coor := prompt.Input("place> ", placeCompleter)
-
+				//opcion de salir
+				if coor == softExit {
+					missCoor = false
+				} else if coor == hardExit {
+					missCoor = false
+					playing = false
+				}
 				if len(coor) == 0 {
 					fmt.Printf("pero yo no veo nada!\n")
 					continue
@@ -64,19 +102,18 @@ func main() {
 				if err != nil {
 					fmt.Printf("no es un numeretto >:[\n")
 					continue
+				} else {
+					miraKlendosNumeretos(num1, num2)
+					missCoor = false
 				}
-				jugadaIncorrecta = false
-			} //end of 2nd while
-			//while jugadaIncorrecta = false segui corriendo esto
-			miraKlendosNumeretos(num1, num2)
-			continue //sale a opciones
+			}
+
 		case optExit:
 			playing = false
 		} //end of switch
 
-	} //end of while
+	} //end of game while
 	fmt.Printf("Ci vediamo dopo")
-
 }
 
 func tabCompleter(d prompt.Document) []prompt.Suggest {
@@ -106,7 +143,9 @@ func playCompleter(player prompt.Document) []prompt.Suggest {
 }
 
 func placeCompleter(player prompt.Document) []prompt.Suggest {
-	s := []prompt.Suggest{{Text: "", Description: ""}}
+	s := []prompt.Suggest{
+		{Text: softExit, Description: "To main menu"},
+		{Text: hardExit, Description: "end program"}}
 	return prompt.FilterHasPrefix(s, player.GetWordAfterCursor(), true)
 }
 
@@ -119,7 +158,14 @@ func myfunc2(player string) {
 	//call my func
 	//prompt play until myfunc return winner
 }
-func miraKlendosNumeretos(num1, num2 int) {
+func miraKlendosNumeretos(num1, num2 int) bool {
 	fmt.Printf("mira que lindos estos dos numerettos %v %v\n", num1, num2)
+	fmt.Printf("con el turno puesto\n#,#,#\n,#,#,#\n,#,#,#\n")
+	fmt.Printf("tu turno enemy\n")
+	return false
 	//call my func donde devuelve la jugadeta
+}
+
+func congrats() {
+	fmt.Println("Congrats player!")
 }
