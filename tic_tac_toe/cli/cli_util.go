@@ -3,8 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	s "strconv"
+	"strconv"
 	"strings"
+
+	T "../project/tictactoe"
 
 	"github.com/c-bata/go-prompt"
 )
@@ -14,13 +16,16 @@ const optPlay = "play"
 const softExit = "home"
 const hardExit = "exit"
 
-//var gameStruct T.Game
+var gameStruct T.Game
 
+//usar NewGame
+//Play(juega y devuelve ganador)
+//PrintBoard
 func getSizeFromUser() (int, error) {
 	fmt.Println("Which size?") //int
 	//pido el size del tablero
 	strNum := prompt.Input("new> ", exitCompleter)
-	num, err := s.Atoi(strNum)
+	num, err := strconv.Atoi(strNum)
 	if err != nil {
 		err = errors.New("We need numbers ('-.-)\n")
 	} else if num < 0 || num > 9 {
@@ -40,10 +45,9 @@ func getPlayerFromUser() (string, error) {
 	return strings, err
 }
 
-/*Execute get coordinates, returns slice of ints and error
- */
-func getCoorFromPlayer() ([2]int, error) {
-	coorInt := [2]int{}
+/*Execute get coordinates, returns slice of ints and error*/
+func getCoorFromPlayer() (T.Coord, error) {
+	var coorInt T.Coord
 	fmt.Println("Choose coordinates with the following format >>\n0:1 Row first, Column second")
 	//recibo string del player
 
@@ -59,8 +63,8 @@ func getCoorFromPlayer() ([2]int, error) {
 		return coorInt, errors.New("Am I missing something? :/\n")
 	}
 	//convierto los strings a num
-	num1, err1 := s.Atoi(inputSplit[0])
-	num2, err2 := s.Atoi(inputSplit[1])
+	num1, err1 := strconv.Atoi(inputSplit[0])
+	num2, err2 := strconv.Atoi(inputSplit[1])
 	//si no son numeros, va error
 	if err1 != nil || err2 != nil {
 		return coorInt, errors.New("no es un numeretto >:[")
@@ -69,8 +73,7 @@ func getCoorFromPlayer() ([2]int, error) {
 	if num1 < 0 || num2 < 0 {
 		return coorInt, errors.New("no negative numbers, please")
 	}
-	coorInt[0] = num1
-	coorInt[1] = num2
+	coorInt = T.Coord{X: uint(num2), Y: uint(num1)}
 
 	return coorInt, nil
 	//TODO: ver si estoy checkeando que no pida numeros mayores a lo que el tablero me pide
@@ -93,7 +96,7 @@ func main() {
 
 	for playing {
 		selectedOpt := prompt.Input("begin> ", mainMenuCompleter)
-
+		//menu
 		switch selectedOpt {
 		case optNew: //no tocar
 			needSize := true
@@ -111,29 +114,37 @@ func main() {
 		case optPlay:
 			//lo voy a usar despues
 			playerSelected := ""
-
+			var oppositePlayer string
+			var err error
 			requirePlayer := true
 			for requirePlayer {
-				playerSelected, err := getPlayerFromUser()
+				playerSelected, err = getPlayerFromUser()
 				if err != nil {
 					fmt.Println(err)
 					continue
+				}
+				if playerSelected == "X" {
+					oppositePlayer = "X"
+				} else {
+					oppositePlayer = "O"
 				}
 				requirePlayer = false
 			}
-			//una vez guardado el jugador>>
+			//una vez guardado los jugadores>>
 
 			//mientras no haya error o no haya ganador
-			var coor [2]int
+			var coor T.Coord
+			var err2 error
 			requireCoor := true
 			for requireCoor {
-				coor, err := getCoorFromPlayer()
+				//check de cli
+				coor, err2 = getCoorFromPlayer()
 				if err != nil {
-					fmt.Println(err)
+					fmt.Println(err2)
 					continue
 				}
 				//guardada la coordenada >>
-				player, winner, errgame := myFuncPlay(playerSelected, coor) //y board
+				player, winner, errgame := T.Play(playerSelected, coor, &gameStruct) //y board
 				if winner {
 					congrats(player)
 					requireCoor = false

@@ -57,10 +57,12 @@ type Coord struct {
 }
 
 /*Play place the play, receiving the char, the coordinates
-and the board itself. Returns an error(string) if incorrect player turn*/
+and the board itself. Returns string(char winner or draw), the board, and error if:
+*place not available, correct player, correct turn, draw
+*/
 func Play(char string, coordinate Coord, game *Game) (string, [][]string, error) {
 	if game.lastplayed == noPlayer || char != game.lastplayed {
-		err := playCheck(char, coordinate, &game.board)
+		err := placeCheck(char, coordinate, &game.board)
 		if err != nil {
 			return "", game.board, err
 		}
@@ -69,15 +71,17 @@ func Play(char string, coordinate Coord, game *Game) (string, [][]string, error)
 		return char, game.board, errors.New("Hey, let the other play too :)")
 	}
 
-	result := check(game)
-	if result != "" {
-		return result, game.board, nil
+	gameState, err := check(game)
+	if err != nil {
+		return "", game.board, err
 	}
-	return char, game.board, nil
+	return gameState, game.board, nil
 }
 
-/*called by Play.check if the player was correct and place the play otherwise returns error*/
-func playCheck(char string, coordinate Coord, board *[][]string) error {
+/*called by Play.check if the player was correct and place the play otherwise returns errors:
+* check if the place is available to play : else occupied error, no board error
+ */
+func placeCheck(char string, coordinate Coord, board *[][]string) error {
 	x := int(coordinate.X) //column
 	y := int(coordinate.Y) //row
 	player := strings.ToUpper(char)
@@ -99,8 +103,8 @@ func playCheck(char string, coordinate Coord, board *[][]string) error {
 	return nil
 }
 
-/*Check the game for winners. Used by Play*/
-func check(game *Game) string {
+/*Check the game for winners. Used by Play, returns the player winner or an error if draw*/
+func check(game *Game) (string, error) {
 	type conditions struct {
 		row    [2]int
 		column [2]int
@@ -160,44 +164,44 @@ func check(game *Game) string {
 		//check si en row hay 3 iguales
 
 		if plays.row[o] == win {
-			return playerO
+			return playerO, nil
 		}
 		plays.row[o] = 0
 
 		if plays.row[x] == win {
-			return playerX
+			return playerX, nil
 		}
 		plays.row[x] = 0
 
 		//check si column
 		if plays.column[o] == win {
-			return playerO
+			return playerO, nil
 		}
 		plays.column[o] = 0
 
 		if plays.column[x] == win {
-			return playerX
+			return playerX, nil
 		}
 		plays.column[x] = 0
 
 		//check si diag1
 		if plays.diag1[x] == win {
-			return playerX
+			return playerX, nil
 		}
 		if plays.diag1[o] == win {
-			return playerO
+			return playerO, nil
 		}
 
 		//check si diag2
 
 		if plays.diag2[x] == win {
-			return playerX
+			return playerX, nil
 		}
 		if plays.diag2[o] == win {
-			return playerO
+			return playerO, nil
 		}
 	} //end of for
-	return "no win, play again?"
+	return "", errors.New("no win, play again?")
 }
 
 /*fmt.Sprintf("%s wins", variable q contiene un string)*/
