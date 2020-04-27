@@ -12,7 +12,7 @@ const noPlayer string = "#"
 
 var o, x = 0, 1
 
-/*Game containin board type [][]string,	lastplayed type string,
+/*Game containing board type [][]string,	lastplayed type string,
 winner type bool*/
 type Game struct {
 	Board      [][]string
@@ -42,17 +42,6 @@ func NewGame(size int) Game {
 	Game.Winner = false
 
 	return Game
-}
-
-/*PrintBoard prints a board nicely in cmd-line.*/
-func PrintBoard(game *Game) {
-	for i, innerArray := range game.Board {
-		for j := range innerArray {
-			fmt.Printf(game.Board[i][j])
-		}
-		fmt.Println("")
-	}
-	fmt.Println("_")
 }
 
 /*Play place the play, receiving the char, the coordinates
@@ -89,7 +78,7 @@ func placeCheck(char string, coordinate Coord, board *[][]string) error {
 		if matrix[y][x] == noPlayer {
 			matrix[y][x] = player
 		} else {
-			return fmt.Errorf("coordinate {%d %d} Occupied ! Try other place again", x, y)
+			return fmt.Errorf("Coordinate {%d %d} Occupied ! Try other place again", x, y)
 		}
 	} else {
 		return fmt.Errorf("{%d %d} Oh oh, there is no board there my friend :/", x, y)
@@ -198,4 +187,13 @@ func check(game *Game) string {
 	return ""
 }
 
-/*fmt.Sprintf("%s wins", variable q contiene un string)*/
+/*PrintBoard prints a board nicely in cmd-line.*/
+func PrintBoard(game *Game) {
+	for i, innerArray := range game.Board {
+		for j := range innerArray {
+			fmt.Printf(game.Board[i][j])
+		}
+		fmt.Println("")
+	}
+	fmt.Println("_")
+}

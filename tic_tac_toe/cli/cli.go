@@ -51,7 +51,7 @@ func main() {
 				playerSelected, err = getPlayerFromUser()
 				if err != nil {
 					fmt.Println(err)
-					break
+					continue
 				}
 				requirePlayer = false
 			}
@@ -69,7 +69,6 @@ func main() {
 					requireCoor = false
 					break
 				} else if option == "exit" {
-					//something is wrong here
 					requireCoor = false
 					playing = false
 					break
@@ -79,15 +78,10 @@ func main() {
 					continue
 				}
 				//guardada la coordenada >>
-				fmt.Printf("About to play: Player:%s, Coord:%+v\n", playerSelected, coor)
+				//fmt.Printf("About to play: Player:%s, Coord:%+v\n", playerSelected, coor)
 				winner, board, errgame := T.Play(playerSelected, coor, &gameStruct)
-				fmt.Printf("Result of play: Player:%s, ERR:%+v\n", winner, errgame)
+				//fmt.Printf("Result of play: Player:%s, ERR:%+v\n", winner, errgame)
 				T.PrintBoard(&gameStruct)
-				//hay ganador?
-				//si/ devuelvo ganador, rompo loop
-				//no/ hay error?
-				//si/ pone bien
-				//no/cambia jugador
 
 				if errgame != nil {
 					fmt.Println(errgame)
@@ -99,10 +93,13 @@ func main() {
 					playerSelected, err = switchPlayer(playerSelected)
 					if err != nil {
 						break
+					} else {
+						fmt.Printf("Your turn %s\n", playerSelected)
 					}
 				} else {
 					congrats(winner)
 					fmt.Println(board)
+					cleanBoard(&gameStruct)
 					requireCoor = false
 				}
 			}
@@ -121,19 +118,6 @@ func main() {
 
 	} //end of while game
 	fmt.Printf("Ci vediamo dopo")
-}
-
-func myfunNewGame(num int) {
-	fmt.Println("#,#,#\n,#,#,#\n,#,#,#")
-	//call my func
-}
-
-func myFuncPlay(player string, coor [2]int) (string, bool, error) {
-	fmt.Printf("mira que lindos estos dos numerettos %v %v\n", coor[0], coor[1])
-	fmt.Printf("#,#,#\n,#,#,#\n,#,#,#\n\n")
-	fmt.Printf("le toca al otro\n")
-	return "", false, nil
-	//call my func que recibe jugador, operacion y board, devuelve:char, game.board, nil/error
 }
 
 func congrats(player string) {

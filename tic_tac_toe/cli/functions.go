@@ -42,8 +42,8 @@ func getPlayerFromUser() (string, error) {
 func getCoorFromPlayer() (T.Coord, string, error) {
 	var coorInt T.Coord
 	fmt.Println("Choose coordinates with the following format >>\n0:1 Row first, Column second")
-	//recibo string del player
 
+	//recibo string del player
 	input := prompt.Input("place> ", exitCompleter)
 	if input == "home" {
 		return coorInt, softExit, nil
@@ -86,4 +86,13 @@ func switchPlayer(player string) (string, error) {
 		return "X", nil
 	}
 	return "", fmt.Errorf("Can't switch player %s", player)
+}
+
+//funcion que restartea el board
+func cleanBoard(board *T.Game) {
+	for row := 0; row < len(board.Board); row++ {
+		for column := 0; column < len(board.Board); column++ {
+			board.Board[row][column] = "#"
+		}
+	}
 }
