@@ -140,7 +140,7 @@ func check(game *Game) string {
 				}
 			}
 
-			fmt.Printf("%+v %+v\n", row, column)
+			//fmt.Printf("%+v %+v\n", row, column)
 
 		} // end inner for
 

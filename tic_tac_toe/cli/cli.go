@@ -73,7 +73,7 @@ func main() {
 					playing = false
 					break
 				}
-				if err != nil {
+				if err2 != nil {
 					fmt.Println(err2)
 					continue
 				}
@@ -99,7 +99,8 @@ func main() {
 				} else {
 					congrats(winner)
 					fmt.Println(board)
-					cleanBoard(&gameStruct)
+					gameStruct.Board = nil
+					gameStruct.Lastplayed = ""
 					requireCoor = false
 				}
 			}

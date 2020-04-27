@@ -44,6 +44,7 @@ func getCoorFromPlayer() (T.Coord, string, error) {
 	fmt.Println("Choose coordinates with the following format >>\n0:1 Row first, Column second")
 
 	//recibo string del player
+	//outside options
 	input := prompt.Input("place> ", exitCompleter)
 	if input == "home" {
 		return coorInt, softExit, nil
@@ -60,6 +61,10 @@ func getCoorFromPlayer() (T.Coord, string, error) {
 	//que no haya mas de un :, que no haya menos de dos strings
 	if len(inputSplit) != 2 {
 		return coorInt, "", errors.New("Am I missing something? :/\n")
+	}
+	//si uno de los 2 esta vacio
+	if inputSplit[0] == "" || inputSplit[1] == "" {
+		return coorInt, "", errors.New("one of them is an empty space ;/\n")
 	}
 	//convierto los strings a num
 	num1, err1 := strconv.Atoi(inputSplit[0])
@@ -86,13 +91,4 @@ func switchPlayer(player string) (string, error) {
 		return "X", nil
 	}
 	return "", fmt.Errorf("Can't switch player %s", player)
-}
-
-//funcion que restartea el board
-func cleanBoard(board *T.Game) {
-	for row := 0; row < len(board.Board); row++ {
-		for column := 0; column < len(board.Board); column++ {
-			board.Board[row][column] = "#"
-		}
-	}
 }
