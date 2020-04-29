@@ -45,8 +45,11 @@ func NewGame(size int) Game {
 }
 
 /*Play place the play, receiving the char, the coordinates
-and the board itself. Returns string(char winner or draw), the board, and error if:
-*place not available, correct player, correct turn, draw*/
+and the board itself. Returns string(char winner or draw), the board, and
+error if:
+place not available,
+correct player,
+correct turn, (falta)draw*/
 func Play(char string, coordinate Coord, game *Game) (string, [][]string, error) {
 	if game.Lastplayed == noPlayer || char != game.Lastplayed {
 		err := placeCheck(char, coordinate, &game.Board)

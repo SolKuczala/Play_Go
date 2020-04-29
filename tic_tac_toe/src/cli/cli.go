@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	T "../project/tictactoe"
+	T "../tictactoe"
 
 	"github.com/c-bata/go-prompt"
 )
@@ -118,7 +118,7 @@ func main() {
 		} //end of switch
 
 	} //end of while game
-	fmt.Printf("Ci vediamo dopo")
+	fmt.Printf("Ci vediamo dopo\n")
 }
 
 func congrats(player string) {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	T "../project/tictactoe"
+	T "../tictactoe"
 	"github.com/c-bata/go-prompt"
 )
 
