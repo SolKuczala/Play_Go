@@ -15,7 +15,7 @@ var board T.Game
 func main() {
 	r := gin.Default()
 	r.GET("/create-board/:size", createGame)
-	r.POST("/send-play/:player/:row/:column", sendPlay)
+	r.PUT("/send-play/:player/:row/:column", sendPlay)
 
 	r.Run(":9090") // listen and serve on 0.0.0.0:9090
 }
@@ -29,38 +29,51 @@ func createGame(c *gin.Context) {
 		return
 	}
 	board = T.NewGame(size)
-	c.JSON(200, gin.H{"board": board.Board})
+	c.JSON(http.StatusCreated, gin.H{"board": board.Board})
 	//c.JSON(200, gin.H{"message": "hola"})
 	//T.PrintBoard(&board)
 	//println(c) //prints this: 0xc00032e380
 }
 
 func sendPlay(c *gin.Context) {
+	//tomo los parametros
 	rowParam := c.Param("row")
 	columnParam := c.Param("column")
 	playerParam := c.Param("player")
-
+	//checkeo player
 	if playerParam != "X" && playerParam != "O" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")}) //no esta impr el err
+		return
 	}
-
+	//una vez pasado eso, pasamos los numeros de str a int
 	row, errR := strconv.Atoi(rowParam)
 	column, errC := strconv.Atoi(columnParam)
+	//checkeo errores
 	if errR != nil || errC != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("We need numbers ('-.-)\n")})
+		return
 	} else if row < 0 || column > 9 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"error":  errors.New("No negative numbers, and less than 10")})
+		return
 	}
-
+	//una vez que ta todo bien lo agregamos al struct con su corr format
 	coor := T.Coord{X: uint(row), Y: uint(column)}
-	str, matr, err := T.Play(playerParam, coor, &board)
+	//se lo pasamos a Play del package T
+	winner, matrix, err := T.Play(playerParam, coor, &board)
+	//chekeamos si hay error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()}) //porq Error()
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matr, "byPlayer": str})
-	//	fmt.Printf("Me llego:\n%+v", r)
+	//si hay winner
+	if winner != "" {
+		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
+		return
+	}
+	//sino muestro el estado para que se siga la partida
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": board.Lastplayed})
 }
 
 /*

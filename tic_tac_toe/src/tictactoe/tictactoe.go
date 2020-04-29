@@ -89,7 +89,7 @@ func placeCheck(char string, coordinate Coord, board *[][]string) error {
 	return nil
 }
 
-/*Check the game for winners. Used by Play, returns the player winner or an error if draw*/
+/*Check the game for winners. Used by Play, returns the player winner or empty(?*/
 func check(game *Game) string {
 	type conditions struct {
 		row    [2]int
