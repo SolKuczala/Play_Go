@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	T "../tictactoe"
+	T "github.com/SolKuczala/Play_Go/tic_tac_toe/tictactoe"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,11 +22,18 @@ func main() {
 }
 
 func createGame(c *gin.Context) {
-	//crea el board de juego que le manda al user cuando va al path /create-game
+	//tomo el size
 	sizeParam := c.Param("size")
+	//lo paso a numero
 	size, err := strconv.Atoi(sizeParam)
+	//si atoi no puede, devuelvo su error(horrible)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
+		return
+	}
+	//controlar size:
+	if size < 0 || size > 9 {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and less than 10")})
 		return
 	}
 	board = T.NewGame(size)
@@ -72,15 +79,14 @@ func sendPlay(c *gin.Context) {
 	if winner != "" {
 		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
 		fmt.Println(board)
+		board.Board = nil
+		board.Lastplayed = ""
 		return
 	}
 	//sino muestro el estado para que se siga la partida
 	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": board.Lastplayed})
 }
 
-//ver que no se pueda jugar despues de ganar
-//input del size board
-//cuando juega
 /*
 proye:
 que dos maquinas jueguen al tic tac toe.

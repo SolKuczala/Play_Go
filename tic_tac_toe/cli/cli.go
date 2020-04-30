@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	T "../tictactoe"
+	T "github.com/SolKuczala/Play_Go/tic_tac_toe/tictactoe"
 
 	"github.com/c-bata/go-prompt"
 )
