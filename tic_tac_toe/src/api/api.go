@@ -3,6 +3,7 @@ package main
 //validar la data que le llega y resp
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -70,12 +71,16 @@ func sendPlay(c *gin.Context) {
 	//si hay winner
 	if winner != "" {
 		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
+		fmt.Println(board)
 		return
 	}
 	//sino muestro el estado para que se siga la partida
 	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": board.Lastplayed})
 }
 
+//ver que no se pueda jugar despues de ganar
+//input del size board
+//cuando juega
 /*
 proye:
 que dos maquinas jueguen al tic tac toe.
