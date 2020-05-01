@@ -15,10 +15,6 @@ const hardExit = "exit"
 
 var gameStruct T.Game
 
-//usar NewGame
-//Play(juega y devuelve ganador)
-//PrintBoard
-
 func main() {
 	fmt.Println("Tic Tac Toe , Welcome!\n What do you want to do? :)")
 	//while para el juego entero

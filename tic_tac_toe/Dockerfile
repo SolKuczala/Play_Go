@@ -6,9 +6,10 @@ RUN apt-get update -y && apt-get install -y golang git
 
 RUN go get github.com/c-bata/go-prompt
 
-COPY / /tic-tac-toe/
-WORKDIR /tic-tac-toe/src/cli/
+COPY / /go/src/github.com/SolKuczala/Play_Go/tic_tac_toe/
 
-RUN go build *.go
+WORKDIR /go/src/github.com/SolKuczala/Play_Go/tic_tac_toe/cli/
 
-ENTRYPOINT ./cli
+#RUN go build *.go
+ENTRYPOINT bash
+#ENTRYPOINT ./cli

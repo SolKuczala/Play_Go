@@ -18,7 +18,7 @@ func main() {
 	r.GET("/create-board/:size", createGame)
 	r.PUT("/send-play/:player/:row/:column", sendPlay)
 
-	r.Run(":9090") // listen and serve on 0.0.0.0:9090
+	r.Run("127.0.0.1:9090") // listen and serve on 0.0.0.0:9090
 }
 
 func createGame(c *gin.Context) {
@@ -27,6 +27,7 @@ func createGame(c *gin.Context) {
 	//lo paso a numero
 	size, err := strconv.Atoi(sizeParam)
 	//si atoi no puede, devuelvo su error(horrible)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		return
@@ -60,7 +61,7 @@ func sendPlay(c *gin.Context) {
 	if errR != nil || errC != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("We need numbers ('-.-)\n")})
 		return
-	} else if row < 0 || column > 9 {
+	} else if row < 0 || row > 9 || column < 0 || column < 9 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
 			"error":  errors.New("No negative numbers, and less than 10")})
