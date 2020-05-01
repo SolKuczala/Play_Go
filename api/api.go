@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strconv"
 
-	T "github.com/SolKuczala/Play_Go/tic_tac_toe/tictactoe"
+	T "github.com/SolKuczala/tic-tac-go"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +18,7 @@ func main() {
 	r.GET("/create-board/:size", createGame)
 	r.PUT("/send-play/:player/:row/:column", sendPlay)
 
-	r.Run("127.0.0.1:9090") // listen and serve on 0.0.0.0:9090
+	r.Run(":9090") // listen and serve on 0.0.0.0:9090
 }
 
 func createGame(c *gin.Context) {
@@ -61,10 +61,10 @@ func sendPlay(c *gin.Context) {
 	if errR != nil || errC != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("We need numbers ('-.-)\n")})
 		return
-	} else if row < 0 || row > 9 || column < 0 || column < 9 {
+	} else if row < 0 || row > 9 || column < 0 || column > 9 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
-			"error":  errors.New("No negative numbers, and less than 10")})
+			"error":  errors.New("No negative numbers, and less than 10").Error()})
 		return
 	}
 	//una vez que ta todo bien lo agregamos al struct con su corr format

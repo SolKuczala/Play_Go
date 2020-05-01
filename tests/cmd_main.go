@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	T "../project/tictactoe"
+	T "github.com/SolKuczala/tic-tac-go"
 )
 
 var gameStruct T.Game
@@ -17,7 +17,7 @@ func main() {
 	}
 	for i, play := range plays {
 		coor := T.Coord{X: uint(i % 3), Y: uint(i / 3)}
-		_, err := T.Play(play, coor, &gameStruct)
+		_, _, err := T.Play(play, coor, &gameStruct)
 		printIfError(err)
 		T.PrintBoard(&gameStruct)
 	}
