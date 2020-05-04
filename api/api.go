@@ -11,13 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var board T.Game
+var BOARD T.Game
 
 func main() {
 	r := gin.Default()
 	r.GET("/create-board/:size", createGame)
 	r.PUT("/send-play/:player/:row/:column", sendPlay)
-
+	r.GET("/status", getStatus)
 	r.Run(":9090") // listen and serve on 0.0.0.0:9090
 }
 
@@ -37,8 +37,8 @@ func createGame(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and less than 10")})
 		return
 	}
-	board = T.NewGame(size)
-	c.JSON(http.StatusCreated, gin.H{"board": board.Board})
+	BOARD = T.NewGame(size)
+	c.JSON(http.StatusCreated, gin.H{"board": BOARD.Board})
 	//c.JSON(200, gin.H{"message": "hola"})
 	//T.PrintBoard(&board)
 	//println(c) //prints this: 0xc00032e380
@@ -70,7 +70,7 @@ func sendPlay(c *gin.Context) {
 	//una vez que ta todo bien lo agregamos al struct con su corr format
 	coor := T.Coord{X: uint(row), Y: uint(column)}
 	//se lo pasamos a Play del package T
-	winner, matrix, err := T.Play(playerParam, coor, &board)
+	winner, matrix, err := T.Play(playerParam, coor, &BOARD)
 	//chekeamos si hay error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()}) //porq Error()
@@ -79,13 +79,21 @@ func sendPlay(c *gin.Context) {
 	//si hay winner
 	if winner != "" {
 		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
-		fmt.Println(board)
-		board.Board = nil
-		board.Lastplayed = ""
+		fmt.Println(BOARD)
+		BOARD.Board = nil
+		BOARD.Lastplayed = ""
 		return
 	}
 	//sino muestro el estado para que se siga la partida
-	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": board.Lastplayed})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": BOARD.Lastplayed})
+}
+
+/*devuelve el board, a quien le toca y si gano alguien*/
+func getStatus(c *gin.Context) {
+	c.JSON(200, gin.H{"status": "ok",
+		"board":       BOARD.Board,
+		"last-player": BOARD.Lastplayed})
+	return
 }
 
 /*

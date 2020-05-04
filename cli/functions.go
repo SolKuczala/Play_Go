@@ -83,6 +83,7 @@ func getCoorFromPlayer() (T.Coord, string, error) {
 	//TODO: ver si estoy checkeando que no pida numeros mayores a lo que el tablero me pide
 }
 
+/*SwitchPlayer : Change player to its opposite*/
 func switchPlayer(player string) (string, error) {
 	if player == "X" {
 		return "O", nil

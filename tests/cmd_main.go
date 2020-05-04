@@ -24,9 +24,10 @@ func main() {
 	T.PrintBoard(&gameStruct)
 }
 
-//funcion que haga la siguiente linea:
 func printIfError(err error) {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 }
+
+//TODO: make the proper tests

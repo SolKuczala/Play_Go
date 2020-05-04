@@ -37,7 +37,6 @@ func main() {
 				T.PrintBoard(&gameStruct)
 				needSize = false
 			}
-			//WORKING
 		case optPlay:
 			//lo voy a usar despues
 			playerSelected := ""
