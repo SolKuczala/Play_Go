@@ -2,6 +2,7 @@ FROM ubuntu:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/go
+ENV MODE=api
 
 RUN apt-get update -y && apt-get install -y golang git
 
@@ -17,4 +18,4 @@ RUN go install
 
 WORKDIR ${GOPATH}/bin/
 
-ENTRYPOINT ./api
+ENTRYPOINT ./${MODE}
