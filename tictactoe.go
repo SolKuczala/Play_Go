@@ -49,7 +49,7 @@ and the board itself. Returns string(char winner or draw), the board, and
 error if:
 place not available,
 correct player,
-correct turn, (falta)draw*/
+correct turn, (missing)draw*/
 func Play(char string, coordinate Coord, game *Game) (string, [][]string, error) {
 	if game.Lastplayed == noPlayer || char != game.Lastplayed {
 		err := placeCheck(char, coordinate, &game.Board)
