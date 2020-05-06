@@ -2,6 +2,8 @@ package main
 
 //esta en otro docker?
 import (
+	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -12,54 +14,93 @@ import (
 )
 
 func main() {
+	baseURL := getUserParams()
 	//va a empezar la jugada pidiendo un board
-	getBoard()
-	//time.Sleep(2 * time.Second)
-	playreq()
+	getBoard(baseURL)
+	playreq(baseURL)
+	getStatus(baseURL)
+	//read the board and depending where the opposite played you played
+
 }
 
-func getBoard() {
+func getUserParams() string {
+	var port = flag.Int("port", 8080, "port number")
+	var ip = flag.String("ip", "127.0.0.1", "ip")
+	flag.Parse()
+	return fmt.Sprintf("http://%s:%d", *ip, *port)
+}
+
+func getBoard(baseURL string) error {
+	fmt.Println("getting board...")
 	rand.Seed(time.Now().UnixNano())
 	randomNum := random(3, 9)
-	resp, err := http.Get("http://127.0.0.1:8080/create-board/" + strconv.Itoa(randomNum))
+	resp, err := http.Get(baseURL + "/create-board/" + strconv.Itoa(randomNum))
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("%g", err)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("%g", err)
 	}
 	log.Println(string(body))
+	return nil
 }
 
-func playreq() {
-	//rand.Seed(time.Now().UnixNano())
-	//randomNum := random(3, 9)
+func playreq(baseURL string) error {
+	fmt.Println("playing...")
+	rand.Seed(time.Now().UnixNano())
+	randomNum := random(0, 2)
 	client := &http.Client{}
-
 	// Create request
-	req, err := http.NewRequest("PUT", "http://127.0.0.1:8080/send-play/X/0/1", nil) //+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum)/ or url.Values{"player": {"X"}, "row": {"1"}, "column": {"0"}
+	req, err := http.NewRequest("PUT", baseURL+"/send-play/X/"+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum), nil) //+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum)/ or url.Values{"player": {"X"}, "row": {"1"}, "column": {"0"}
 	if err != nil {
 		fmt.Println(err)
 	}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return fmt.Errorf("%g", err)
 	}
-	//	defer resp.Body.Close()
-
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return fmt.Errorf("%g", err)
 	}
-
 	// Display Results
 	fmt.Println("response Status : ", resp.Status)
 	fmt.Println("response Headers : ", resp.Header)
 	fmt.Println("response Body : ", string(respBody))
+	return nil
+}
+
+func getStatus(baseURL string) error {
+	fmt.Println("getting status...")
+	resp, err := http.Get(baseURL + "/status")
+	if err != nil {
+		return fmt.Errorf("%g", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("%g", err)
+	}
+
+	type Body struct {
+		Board      [][]string `json: "board"`
+		Lastplayer string     `json: "last-player"`
+		Status     string     `json: "status"`
+	}
+
+	var bodyContent Body
+	err = json.Unmarshal(body, &bodyContent)
+	if err != nil {
+		fmt.Println("error:", err)
+		return err
+	} else {
+		fmt.Printf("%+v", bodyContent)
+	}
+	//log.Println(string(body))
+	return nil
 }
 
 func random(min int, max int) int {

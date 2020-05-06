@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*BOARD Main variable for saving the game*/
 var BOARD T.Game
 
 func main() {
@@ -88,9 +89,9 @@ func sendPlay(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": BOARD.Lastplayed})
 }
 
-/*devuelve el board, a quien le toca y si gano alguien*/
+/*devuelve el board, a quien le toca*/
 func getStatus(c *gin.Context) {
-	c.JSON(200, gin.H{"status": "ok",
+	c.JSON(http.StatusOK, gin.H{"status": "ok",
 		"board":       BOARD.Board,
 		"last-player": BOARD.Lastplayed})
 	return
