@@ -3,7 +3,6 @@ package main
 //validar la data que le llega y resp
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -17,6 +16,7 @@ var BOARD T.Game
 func main() {
 	r := gin.Default()
 	r.GET("/create-board/:size", createGame)
+	//r.GET("/tossAcoin", tossCoin)
 	r.PUT("/send-play/:player/:row/:column", sendPlay)
 	r.GET("/status", getStatus)
 	r.Run(":9090") // listen and serve on 0.0.0.0:9090
@@ -46,13 +46,12 @@ func createGame(c *gin.Context) {
 }
 
 func sendPlay(c *gin.Context) {
-	//tomo los parametros
 	rowParam := c.Param("row")
 	columnParam := c.Param("column")
 	playerParam := c.Param("player")
 	//checkeo player
 	if playerParam != "X" && playerParam != "O" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")}) //no esta impr el err
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")})
 		return
 	}
 	//una vez pasado eso, pasamos los numeros de str a int
@@ -80,9 +79,7 @@ func sendPlay(c *gin.Context) {
 	//si hay winner
 	if winner != "" {
 		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
-		fmt.Println(BOARD)
-		BOARD.Board = nil
-		BOARD.Lastplayed = ""
+		//fmt.Println(BOARD)
 		return
 	}
 	//sino muestro el estado para que se siga la partida
@@ -97,11 +94,17 @@ func getStatus(c *gin.Context) {
 	return
 }
 
+/*see if i can make toss a coin option
+func tossCoin(election bool)  {
+	if election == tr{
+
+	}
+}*/
 /*
 proye:
 que dos maquinas jueguen al tic tac toe.
 una maquina va a crear el tablero
-otra es la que pide y empieza el juego
+otra es la que pide? y empieza el juego
 el p1 envia el codigo donde quiere que se marque su jugada
 el p2 guarda eso y responde con la jugada siguiente
 -----------

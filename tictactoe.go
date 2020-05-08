@@ -45,14 +45,19 @@ func NewGame(size int) Game {
 }
 
 /*Play place the play, receiving the char, the coordinates
-and the board itself. Returns string(char winner or draw), the board, and
-error if:
+and the board itself. Returns string(char winner //or draw//), the board,
+and error if:
+game not available
 place not available,
 correct player,
-correct turn, (missing)draw*/
+correct turn,
+TODO: draw*/
 func Play(char string, coordinate Coord, game *Game) (string, [][]string, error) {
+	if game.Winner == true {
+		return "Last Game:", game.Board, errors.New("Cannot play, create another board to start again")
+	}
 	if game.Lastplayed == noPlayer || char != game.Lastplayed {
-		err := placeCheck(char, coordinate, &game.Board)
+		err := checkAndPlace(char, coordinate, &game.Board)
 		if err != nil {
 			return "", game.Board, err
 		}
@@ -61,13 +66,13 @@ func Play(char string, coordinate Coord, game *Game) (string, [][]string, error)
 		return "", game.Board, errors.New("Hey, let the other play too :)")
 	}
 
-	return check(game), game.Board, nil
+	return checkWinner(game), game.Board, nil
 }
 
-/*called by Play.check if the player was correct and place the play otherwise returns errors:
+/*Called by Play.check if the player was correct and place the play otherwise returns errors:
 * check if the place is available to play : else occupied error, no board error
  */
-func placeCheck(char string, coordinate Coord, board *[][]string) error {
+func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
 	x := int(coordinate.X) //column
 	y := int(coordinate.Y) //row
 	player := strings.ToUpper(char)
@@ -78,6 +83,7 @@ func placeCheck(char string, coordinate Coord, board *[][]string) error {
 	matrix := *board
 	//si las coordenadas no se pasan
 	if l := len(*board); x < l && y < l {
+		//si no esta ocupado, placea
 		if matrix[y][x] == noPlayer {
 			matrix[y][x] = player
 		} else {
@@ -90,7 +96,7 @@ func placeCheck(char string, coordinate Coord, board *[][]string) error {
 }
 
 /*Check the game for winners. Used by Play, returns the player winner or empty(?*/
-func check(game *Game) string {
+func checkWinner(game *Game) string {
 	type conditions struct {
 		row    [2]int
 		column [2]int
@@ -150,40 +156,48 @@ func check(game *Game) string {
 		//check si en row hay 3 iguales
 
 		if plays.row[o] == win {
+			game.Winner = true
 			return playerO
 		}
 		plays.row[o] = 0
 
 		if plays.row[x] == win {
+			game.Winner = true
 			return playerX
 		}
 		plays.row[x] = 0
 
 		//check si column
 		if plays.column[o] == win {
+			game.Winner = true
 			return playerO
 		}
 		plays.column[o] = 0
 
 		if plays.column[x] == win {
+			game.Winner = true
 			return playerX
 		}
 		plays.column[x] = 0
 
 		//check si diag1
 		if plays.diag1[x] == win {
+			game.Winner = true
 			return playerX
 		}
 		if plays.diag1[o] == win {
+			game.Winner = true
 			return playerO
 		}
 
 		//check si diag2
 
 		if plays.diag2[x] == win {
+			game.Winner = true
 			return playerX
 		}
 		if plays.diag2[o] == win {
+			game.Winner = true
 			return playerO
 		}
 	} //end of for

@@ -13,13 +13,39 @@ import (
 	"time"
 )
 
+var MYtURN bool
+
 func main() {
 	baseURL := getUserParams()
-	//va a empezar la jugada pidiendo un board
-	getBoard(baseURL)
-	playreq(baseURL)
+	//va a empezar la jugada pidiendo un board,asumo que empieza este player
+	//me imagino una funcion que si le llega true del toss coin hace get del board
+	MYtURN = true
+	if MYtURN == true {
+		getBoard(baseURL, 3)
+		//mando juego
+		playRandom(baseURL)
+		//ya no es mas mi turno
+		MYtURN = false
+		//espero
+		time.Sleep(7 * time.Second)
+		//pido status
+		respStruct, err := getStatus(baseURL)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			for respStruct.Lastplayer == "X" {
+				time.Sleep(10 * time.Second)
+				_, err := getStatus(baseURL)
+				if err != nil {
+					fmt.Println(err)
+				}
+			} //una vez que rompe
+			playRandom(baseURL)
+		}
+		//		si la resp distinto de
+
+	}
 	getStatus(baseURL)
-	//read the board and depending where the opposite played you played
 
 }
 
@@ -30,11 +56,9 @@ func getUserParams() string {
 	return fmt.Sprintf("http://%s:%d", *ip, *port)
 }
 
-func getBoard(baseURL string) error {
+func getBoard(baseURL string, size int) error {
 	fmt.Println("getting board...")
-	rand.Seed(time.Now().UnixNano())
-	randomNum := random(3, 9)
-	resp, err := http.Get(baseURL + "/create-board/" + strconv.Itoa(randomNum))
+	resp, err := http.Get(baseURL + "/create-board/" + strconv.Itoa(size))
 	if err != nil {
 		return fmt.Errorf("%g", err)
 	}
@@ -47,10 +71,11 @@ func getBoard(baseURL string) error {
 	return nil
 }
 
-func playreq(baseURL string) error {
+//randomPlay
+func playRandom(baseURL string) error {
 	fmt.Println("playing...")
 	rand.Seed(time.Now().UnixNano())
-	randomNum := random(0, 2)
+	randomNum := randomNum(0, 2)
 	client := &http.Client{}
 	// Create request
 	req, err := http.NewRequest("PUT", baseURL+"/send-play/X/"+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum), nil) //+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum)/ or url.Values{"player": {"X"}, "row": {"1"}, "column": {"0"}
@@ -67,42 +92,51 @@ func playreq(baseURL string) error {
 	}
 	// Display Results
 	fmt.Println("response Status : ", resp.Status)
-	fmt.Println("response Headers : ", resp.Header)
+	//fmt.Println("response Headers : ", resp.Header)
 	fmt.Println("response Body : ", string(respBody))
 	return nil
 }
 
-func getStatus(baseURL string) error {
+//opposite game
+func toNotLoose() {
+
+}
+
+//to actually want to win
+func active() {
+
+}
+func randomNum(min int, max int) int {
+	return rand.Intn(max-min) + min
+}
+
+type Body struct {
+	Board      [][]string `json: "board"`
+	Lastplayer string     `json: "last-player"`
+	Status     string     `json: "status"`
+}
+
+/*Gets status of the game, return error from standard packages*/
+func getStatus(baseURL string) (Body, error) {
 	fmt.Println("getting status...")
+	var bodyContent Body
 	resp, err := http.Get(baseURL + "/status")
 	if err != nil {
-		return fmt.Errorf("%g", err)
+		return bodyContent, fmt.Errorf("%g", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return fmt.Errorf("%g", err)
+		return bodyContent, fmt.Errorf("%g", err)
 	}
 
-	type Body struct {
-		Board      [][]string `json: "board"`
-		Lastplayer string     `json: "last-player"`
-		Status     string     `json: "status"`
-	}
-
-	var bodyContent Body
 	err = json.Unmarshal(body, &bodyContent)
 	if err != nil {
 		fmt.Println("error:", err)
-		return err
-	} else {
-		fmt.Printf("%+v", bodyContent)
+		return bodyContent, err
 	}
-	//log.Println(string(body))
-	return nil
-}
+	return bodyContent, nil
 
-func random(min int, max int) int {
-	return rand.Intn(max-min) + min
+	//log.Println(string(body))    fmt.Printf("%+v",
 }
