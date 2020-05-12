@@ -12,13 +12,17 @@ const noPlayer string = "#"
 
 var o, x = 0, 1
 
-/*Game containing board type [][]string,	lastplayed type string,
+/*Game containing board type [][]string,lastplayed type string,
 winner type bool*/
 type Game struct {
 	Board      [][]string
 	Lastplayed string
-	Winner     bool
+	Status     int
 }
+
+var GameStatusOngoing = 0
+var GameStatusEndWithWinner = 1
+var GameStatusEndWithDraw = 2
 
 /*Coord Creates a struct for coordinates*/
 type Coord struct {
@@ -39,12 +43,12 @@ func NewGame(size int) Game {
 	var Game Game
 	Game.Board = matrix
 	Game.Lastplayed = noPlayer
-	Game.Winner = false
+	Game.Status = GameStatusOngoing
 
 	return Game
 }
 
-/*Play place the play, receiving the char, the coordinates
+/*Play :place the play, receiving the char, the coordinates
 and the board itself. Returns string(char winner //or draw//), the board,
 and error if:
 game not available
@@ -52,21 +56,22 @@ place not available,
 correct player,
 correct turn,
 TODO: draw*/
-func Play(char string, coordinate Coord, game *Game) (string, [][]string, error) {
-	if game.Winner == true {
-		return "Last Game:", game.Board, errors.New("Cannot play, create another board to start again")
+func Play(char string, coordinate Coord, game *Game) error {
+	if game.Status != GameStatusOngoing {
+		return errors.New("Cannot play, create another board to start again")
 	}
 	if game.Lastplayed == noPlayer || char != game.Lastplayed {
 		err := checkAndPlace(char, coordinate, &game.Board)
 		if err != nil {
-			return "", game.Board, err
+			return err
 		}
 		game.Lastplayed = char
 	} else {
-		return "", game.Board, errors.New("Hey, let the other play too :)")
+		return errors.New("Hey, let the other play too :)")
 	}
 
-	return checkWinner(game), game.Board, nil
+	checkWinner(game)
+	return nil
 }
 
 /*Called by Play.check if the player was correct and place the play otherwise returns errors:
@@ -96,7 +101,7 @@ func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
 }
 
 /*Check the game for winners. Used by Play, returns the player winner or empty(?*/
-func checkWinner(game *Game) string {
+func checkWinner(game *Game) {
 	type conditions struct {
 		row    [2]int
 		column [2]int
@@ -156,52 +161,65 @@ func checkWinner(game *Game) string {
 		//check si en row hay 3 iguales
 
 		if plays.row[o] == win {
-			game.Winner = true
-			return playerO
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		plays.row[o] = 0
 
 		if plays.row[x] == win {
-			game.Winner = true
-			return playerX
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		plays.row[x] = 0
 
 		//check si column
 		if plays.column[o] == win {
-			game.Winner = true
-			return playerO
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		plays.column[o] = 0
 
 		if plays.column[x] == win {
-			game.Winner = true
-			return playerX
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		plays.column[x] = 0
 
 		//check si diag1
 		if plays.diag1[x] == win {
-			game.Winner = true
-			return playerX
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		if plays.diag1[o] == win {
-			game.Winner = true
-			return playerO
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 
 		//check si diag2
 
 		if plays.diag2[x] == win {
-			game.Winner = true
-			return playerX
+			game.Status = GameStatusEndWithWinner
+			return
 		}
 		if plays.diag2[o] == win {
-			game.Winner = true
-			return playerO
+			game.Status = GameStatusEndWithWinner
+			return
 		}
+
 	} //end of for
-	return ""
+
+	if game.Status == GameStatusOngoing {
+		for _, r := range game.Board {
+			for _, c := range r {
+				if c == noPlayer {
+					return
+				}
+			}
+		}
+		game.Status = GameStatusEndWithDraw
+	}
+
+	return
 }
 
 /*PrintBoard prints a board nicely in cmd-line.*/

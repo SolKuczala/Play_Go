@@ -16,13 +16,13 @@ Api use:
 
 with curl, hit your local machine to the port binded with the next paths:
 
-/create-board/{number}   
+GET {ip:port}/create-board/{number}   
 to create a new board with that size (is set between 2 and 9)
 
-/send-play/{X or O}/{row number}/{column number}  
+PUT{ip:port}/send-play/{X or O}/{row number}/{column number}  
 to send the player and the coordinates where to place that play
 
-/status
+GET{ip:port}/status
 to see status of the game (board, last player that played)
 
 Once ended, must get another board in order to start again.

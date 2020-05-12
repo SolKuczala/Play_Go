@@ -1,6 +1,6 @@
 package main
 
-//validar la data que le llega y resp
+//state
 import (
 	"errors"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 )
 
 /*BOARD Main variable for saving the game*/
-var BOARD T.Game
+var GAME T.Game
 
 func main() {
 	r := gin.Default()
@@ -23,12 +23,8 @@ func main() {
 }
 
 func createGame(c *gin.Context) {
-	//tomo el size
 	sizeParam := c.Param("size")
-	//lo paso a numero
 	size, err := strconv.Atoi(sizeParam)
-	//si atoi no puede, devuelvo su error(horrible)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		return
@@ -38,10 +34,8 @@ func createGame(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and less than 10")})
 		return
 	}
-	BOARD = T.NewGame(size)
-	c.JSON(http.StatusCreated, gin.H{"board": BOARD.Board})
-	//c.JSON(200, gin.H{"message": "hola"})
-	//T.PrintBoard(&board)
+	GAME = T.NewGame(size)
+	c.JSON(http.StatusCreated, gin.H{"board": GAME.Board})
 	//println(c) //prints this: 0xc00032e380
 }
 
@@ -70,27 +64,28 @@ func sendPlay(c *gin.Context) {
 	//una vez que ta todo bien lo agregamos al struct con su corr format
 	coor := T.Coord{X: uint(row), Y: uint(column)}
 	//se lo pasamos a Play del package T
-	winner, matrix, err := T.Play(playerParam, coor, &BOARD)
+	err := T.Play(playerParam, coor, &GAME)
 	//chekeamos si hay error
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()}) //porq Error()
 		return
 	}
 	//si hay winner
-	if winner != "" {
-		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "winner": winner})
+	if GAME.Status != T.GameStatusOngoing {
+		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": GAME.Lastplayed})
 		//fmt.Println(BOARD)
 		return
 	}
 	//sino muestro el estado para que se siga la partida
-	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": matrix, "byPlayer": BOARD.Lastplayed})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "byPlayer": GAME.Lastplayed})
 }
 
 /*devuelve el board, a quien le toca*/
 func getStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok",
-		"board":       BOARD.Board,
-		"last-player": BOARD.Lastplayed})
+		"board":      GAME.Board,
+		"lastPlayer": GAME.Lastplayed,
+		"winners":    GAME.Status})
 	return
 }
 

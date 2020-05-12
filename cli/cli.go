@@ -74,7 +74,7 @@ func main() {
 				}
 				//guardada la coordenada >>
 				//fmt.Printf("About to play: Player:%s, Coord:%+v\n", playerSelected, coor)
-				winner, board, errgame := T.Play(playerSelected, coor, &gameStruct)
+				errgame := T.Play(playerSelected, coor, &gameStruct)
 				//fmt.Printf("Result of play: Player:%s, ERR:%+v\n", winner, errgame)
 				T.PrintBoard(&gameStruct)
 
@@ -83,8 +83,7 @@ func main() {
 					continue
 				}
 
-				if winner == "" {
-					gameStruct.Board = board
+				if gameStruct.Status == T.GameStatusOngoing {
 					playerSelected, err = switchPlayer(playerSelected)
 					if err != nil {
 						break
@@ -92,10 +91,8 @@ func main() {
 						fmt.Printf("Your turn %s\n", playerSelected)
 					}
 				} else {
-					congrats(winner)
-					fmt.Println(board)
-					gameStruct.Board = nil
-					gameStruct.Lastplayed = ""
+					congrats(gameStruct.Lastplayed)
+					fmt.Println(gameStruct.Board)
 					requireCoor = false
 				}
 			}

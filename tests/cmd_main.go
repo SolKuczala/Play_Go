@@ -17,7 +17,7 @@ func main() {
 	}
 	for i, play := range plays {
 		coor := T.Coord{X: uint(i % 3), Y: uint(i / 3)}
-		_, _, err := T.Play(play, coor, &gameStruct)
+		err := T.Play(play, coor, &gameStruct)
 		printIfError(err)
 		T.PrintBoard(&gameStruct)
 	}
