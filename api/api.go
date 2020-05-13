@@ -72,7 +72,11 @@ func sendPlay(c *gin.Context) {
 	}
 	//si hay winner
 	if GAME.Status != T.GameStatusOngoing {
-		c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": GAME.Lastplayed})
+		if GAME.Status == T.GameStatusEndWithDraw {
+			c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": "DRAW"})
+		} else {
+			c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": GAME.Lastplayed})
+		}
 		//fmt.Println(BOARD)
 		return
 	}

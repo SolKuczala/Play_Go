@@ -13,17 +13,18 @@ import (
 	"github.com/SolKuczala/tic-tac-go/bot_player/strategy"
 )
 
-var player = "X"
+var waitTime = 1 * time.Millisecond
 
 //var defaultTriesTreshold = 10
 
 func main() {
-	baseURL, strategyName := getUserParams()
+	baseURL, strategyName, myPlayerChar, firstToPlay := getUserParams()
+	//playchar default X, sino O
 	fmt.Printf("Strategy: %s\n", strategyName)
-	//va a empezar la jugada pidiendo un board,asumo que empieza este player(q es X)
-	//me imagino una funcion que si le llega true del toss coin hace get del board
-	if err := getBoard(baseURL, 3); err != nil {
-		panic("Can't create board :(")
+	if firstToPlay {
+		if err := getBoard(baseURL, 3); err != nil {
+			panic("Can't create board :(")
+		}
 	}
 	selectedStrategy := strategy.StrategiesMap[strategyName]
 	ongoingGame := true
@@ -37,23 +38,33 @@ func main() {
 				break
 			}
 		}
-		if response.Lastplayer != player {
-			//JUEGO
-			selectedStrategy.Play(baseURL, player, 1, response.Board)
+
+		myTurn := false
+		if response.Lastplayer == "#" {
+			myTurn = firstToPlay
+		} else if response.Lastplayer != myPlayerChar {
+			myTurn = true
+		}
+
+		if myTurn {
+			selectedStrategy.Play(baseURL, myPlayerChar, 1, response.Board)
 		} else {
-			time.Sleep(5 * time.Second)
+			time.Sleep(waitTime)
 			continue
 		}
+
 	}
 	fmt.Println("End of game")
 }
 
-func getUserParams() (string, string) {
+func getUserParams() (string, string, string, bool) {
 	var port = flag.Int("port", 8080, "port number")
 	var ip = flag.String("ip", "127.0.0.1", "ip")
 	var strategy = flag.String("strategy", "random", "strategy")
+	var player = flag.String("player", "X", "player")
+	var playfirst = flag.Bool("playfirst", false, "playfirst")
 	flag.Parse()
-	return fmt.Sprintf("http://%s:%d", *ip, *port), *strategy
+	return fmt.Sprintf("http://%s:%d", *ip, *port), *strategy, *player, *playfirst
 }
 
 func getBoard(baseURL string, size int) error {
@@ -90,7 +101,7 @@ type Body struct {
 
 /*Gets status of the game, return error from standard packages*/
 func getStatus(baseURL string) (Body, error) {
-	fmt.Println("getting status...")
+	//fmt.Println("getting status...")
 	var bodyContent Body
 	resp, err := http.Get(baseURL + "/status")
 	if err != nil {
