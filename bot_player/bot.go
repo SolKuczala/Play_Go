@@ -13,7 +13,7 @@ import (
 	"github.com/SolKuczala/tic-tac-go/bot_player/strategy"
 )
 
-var waitTime = 1 * time.Millisecond
+var waitTime = 2000 * time.Millisecond
 
 //var defaultTriesTreshold = 10
 
@@ -27,8 +27,7 @@ func main() {
 		}
 	}
 	selectedStrategy := strategy.StrategiesMap[strategyName]
-	ongoingGame := true
-	for ongoingGame {
+	for true {
 		//pido status
 		response, err := getStatus(baseURL)
 		if err != nil {
@@ -48,11 +47,9 @@ func main() {
 
 		if myTurn {
 			selectedStrategy.Play(baseURL, myPlayerChar, 1, response.Board)
-		} else {
-			time.Sleep(waitTime)
-			continue
 		}
 
+		time.Sleep(waitTime)
 	}
 	fmt.Println("End of game")
 }
@@ -64,6 +61,7 @@ func getUserParams() (string, string, string, bool) {
 	var player = flag.String("player", "X", "player")
 	var playfirst = flag.Bool("playfirst", false, "playfirst")
 	flag.Parse()
+	//TODO: check everything
 	return fmt.Sprintf("http://%s:%d", *ip, *port), *strategy, *player, *playfirst
 }
 
@@ -101,7 +99,7 @@ type Body struct {
 
 /*Gets status of the game, return error from standard packages*/
 func getStatus(baseURL string) (Body, error) {
-	//fmt.Println("getting status...")
+	fmt.Println("getting status...")
 	var bodyContent Body
 	resp, err := http.Get(baseURL + "/status")
 	if err != nil {

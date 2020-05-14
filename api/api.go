@@ -30,8 +30,8 @@ func createGame(c *gin.Context) {
 		return
 	}
 	//controlar size:
-	if size < 0 || size > 9 {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and less than 10")})
+	if size < 3 || size > 9 {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and between 3 and 9")})
 		return
 	}
 	GAME = T.NewGame(size)

@@ -1,0 +1,34 @@
+version: "3.8"
+services:
+
+    server:
+        build:
+            context: ./
+        environment:
+            - MODE=api
+        ports:
+            - "8080:9090"
+
+    player-1:
+        build:
+            context: ./bot_player/
+        depends_on:
+            - server
+        environment:
+            - HOST=server
+            - PORT=9090
+            - STRATEGY=random
+            - PLAYER=O
+            - PLAYFIRST=true
+
+    player-2:
+        build:
+            context: ./bot_player/
+        depends_on:
+            - server
+        environment:
+            - HOST=server
+            - PORT=9090
+            - STRATEGY=linear
+            - PLAYER=X
+            - PLAYFIRST=false
