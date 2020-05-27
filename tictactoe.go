@@ -54,8 +54,7 @@ and error if:
 game not available
 place not available,
 correct player,
-correct turn,
-TODO: draw*/
+correct turn,*/
 func Play(char string, coordinate Coord, game *Game) error {
 	if game.Status != GameStatusOngoing {
 		return errors.New("Cannot play, create another board to start again")
@@ -78,8 +77,8 @@ func Play(char string, coordinate Coord, game *Game) error {
 * check if the place is available to play : else occupied error, no board error
  */
 func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
-	x := int(coordinate.X) //column
-	y := int(coordinate.Y) //row
+	x := int(coordinate.X) //row
+	y := int(coordinate.Y) //column
 	player := strings.ToUpper(char)
 	//si la letra es la correspondiente
 	if player != playerX && player != playerO {
@@ -89,8 +88,8 @@ func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
 	//si las coordenadas no se pasan
 	if l := len(*board); x < l && y < l {
 		//si no esta ocupado, placea
-		if matrix[y][x] == noPlayer {
-			matrix[y][x] = player
+		if matrix[x][y] == noPlayer {
+			matrix[x][y] = player
 		} else {
 			return fmt.Errorf("Coordinate {%d %d} Occupied ! Try other place again", x, y)
 		}
@@ -185,28 +184,31 @@ func checkWinner(game *Game) {
 			game.Status = GameStatusEndWithWinner
 			return
 		}
+		plays.diag1[x] = 0
+
 		if plays.diag1[o] == win {
 			game.Status = GameStatusEndWithWinner
 			return
 		}
-
+		plays.diag1[o] = 0
 		//check si diag2
 
 		if plays.diag2[x] == win {
 			game.Status = GameStatusEndWithWinner
 			return
 		}
+		plays.diag2[x] = 0
 		if plays.diag2[o] == win {
 			game.Status = GameStatusEndWithWinner
 			return
 		}
-
+		plays.diag2[o] = 0
 	} //end of for
 
 	if game.Status == GameStatusOngoing {
-		for _, r := range game.Board {
-			for _, c := range r {
-				if c == noPlayer {
+		for _, row := range game.Board {
+			for _, column := range row {
+				if column == noPlayer {
 					return
 				}
 			}

@@ -26,9 +26,10 @@ services:
             context: ./bot_player/
         depends_on:
             - server
+            - player-1
         environment:
             - HOST=server
             - PORT=9090
-            - STRATEGY=linear
+            - STRATEGY=donot_loose
             - PLAYER=X
             - PLAYFIRST=false

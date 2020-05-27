@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/SolKuczala/tic-tac-go/bot_player/strategy"
+	"github.com/SolKuczala/tic-tac-go/bot_player/strategies"
 )
 
-var waitTime = 2000 * time.Millisecond
+var waitTime = 1500 * time.Millisecond
 
 //var defaultTriesTreshold = 10
 
@@ -26,7 +26,7 @@ func main() {
 			panic("Can't create board :(")
 		}
 	}
-	selectedStrategy := strategy.StrategiesMap[strategyName]
+	selectedStrategy := strategies.StrategiesMap[strategyName]
 	for true {
 		//pido status
 		response, err := getStatus(baseURL)

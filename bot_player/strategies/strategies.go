@@ -19,6 +19,8 @@ type coord struct {
 	j int
 }
 
+/*StrategiesMap : declares types of strategies to choose for the bot in game
+ */
 var StrategiesMap = map[string]PlayStrategy{
 	"random": PlayStrategy{
 		Gen: func(board [][]string, player string) (int, int, error) {
@@ -44,18 +46,10 @@ var StrategiesMap = map[string]PlayStrategy{
 	"donot_loose": PlayStrategy{
 		Gen: donotLoose,
 	},
-	"try_to_win": PlayStrategy{
-		Gen: func(board [][]string, player string) (int, int, error) {
-			for i := 0; i < len(board); i++ {
-				for j := 0; j < len(board); j++ {
-					if board[i][j] == "#" {
-						fmt.Println("try to win") //TO:DO
-					}
-				}
-			}
-			return 0, 0, errors.New("chau")
-		},
-	},
+	//"try_to_win": PlayStrategy{
+	//	Gen: tryToWin,
+	//	},
+	//},
 }
 
 type PlayStrategy struct {
@@ -75,9 +69,10 @@ func (ps PlayStrategy) Play(baseURL, player string, tries int, board [][]string)
 		} else {
 			tries--
 		}
+		//TO-DO: necesito handlear error 400 o mejorar el filtro de donot_loose
 	}
 	if !isOk && tries <= 0 {
-		return errors.New("To many tries")
+		return errors.New("Too many tries")
 	}
 	return nil
 }
@@ -112,13 +107,14 @@ func (ps PlayStrategy) sendPlay(baseURL string, player string, coordX, coordY in
 var donotLoose = func(board [][]string, player string) (int, int, error) {
 	var eligiblePlaceToPlay coord
 	var maxOpponentPlays int
+
 	for _, search := range []string{"row", "column", "diag1", "diag2"} {
-		maxFinder(board, player, search, &eligiblePlaceToPlay, &maxOpponentPlays)
+		idealPlay(board, player, search, &eligiblePlaceToPlay, &maxOpponentPlays)
 	}
 	return eligiblePlaceToPlay.i, eligiblePlaceToPlay.j, nil
 }
 
-func maxFinder(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxOpponentPlays *int) {
+func idealPlay(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxOpponentPlays *int) {
 	if search == "row" || search == "column" {
 		for i := 0; i < len(board); i++ {
 			var sectionOpponentQ int
@@ -142,7 +138,8 @@ func maxFinder(board [][]string, player string, search string, eligiblePlaceToPl
 					sectionOpponentQ++
 				}
 			} //end inner for
-			if sectionPlayerQ > 0 {
+			//condiciones para jugar
+			if sectionPlayerQ > 0 /*la suma de player y opponent != len(board)*/ {
 				continue
 			}
 			if sectionOpponentQ > *maxOpponentPlays {
@@ -179,9 +176,9 @@ func maxFinder(board [][]string, player string, search string, eligiblePlaceToPl
 		var sectionOpponentQ int
 		var sectionPlayerQ int
 		var emptySpace coord
-
 		for i := 0; i < len(board); i++ {
-			element := board[i][len(board)-i]
+			element := board[i][len(board)-1-i]
+
 			switch element {
 			case player:
 				sectionPlayerQ++

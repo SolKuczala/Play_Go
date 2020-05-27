@@ -67,7 +67,8 @@ func sendPlay(c *gin.Context) {
 	err := T.Play(playerParam, coor, &GAME)
 	//chekeamos si hay error
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()}) //porq Error()
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
+		//si el error es 400 deberia mandarselo al bot para que lo handlee
 		return
 	}
 	//si hay winner
@@ -102,11 +103,10 @@ func tossCoin(election bool)  {
 /*
 proye:
 que dos maquinas jueguen al tic tac toe.
-una maquina va a crear el tablero
-otra es la que pide? y empieza el juego
-el p1 envia el codigo donde quiere que se marque su jugada
-el p2 guarda eso y responde con la jugada siguiente
+el primer jugador pide crear el tablero
+el siguiente jugador pide el status y envia su jugada
+el p2 pide status y responde con la jugada siguiente
 -----------
 dos dockers que al levantarlos hacen la jugada
-un externo cuenta los resultados, puede sacar estadisticas
+TO-DO:un externo cuenta los resultados, puede sacar estadisticas
 */

@@ -44,7 +44,7 @@ Start a bot with the following parameters for example:
 | -strategy   | random, linear| string    |
 | -player     | X, O          | string    |
 | -playfirst  | true, false   | boolean   |
-
+//-donot_loose
 ## Docker Compose
 This option is to see two bots playing with each other. In this case "random" against "linear".
 
