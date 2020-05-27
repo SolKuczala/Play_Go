@@ -1,7 +1,9 @@
 # Tic Tac Toe Game
 Implements package, cli and api.
 
-This guides assumes bash shell.
+![Diagram](./docs/ttt.png)
+
+This guide assumes bash shell.
 
 
 > cd tic-tac-toe  
