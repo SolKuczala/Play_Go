@@ -114,7 +114,6 @@ func checkWinner(game *Game) {
 
 	for row := 0; row < len(game.Board); row++ {
 		for column := 0; column < len(game.Board); column++ {
-
 			//aca me voy a leer lo que viene por row y column(el string)
 			matrix := game.Board
 			rowPick := matrix[row][column]
@@ -154,12 +153,8 @@ func checkWinner(game *Game) {
 				}
 			}
 
-			//fmt.Printf("%+v %+v\n", row, column)
-
 		} // end inner for
-
 		//check si en row hay 3 iguales
-
 		if plays.row[o] == win {
 			game.Status = GameStatusEndWithWinner
 			return

@@ -50,4 +50,4 @@ Just run:
 
 > docker-compose build && docker-compose up
 
-*Have in mind that you must have added your user to the docker group in order to run it without sudo privileges.*
+**Have in mind that you must have added your user to the docker group in order to run it without sudo privileges.**

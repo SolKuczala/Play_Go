@@ -80,16 +80,6 @@ func getBoard(baseURL string, size int) error {
 	return nil
 }
 
-//opposite game
-func toNotLoose() {
-
-}
-
-//to actually want to win
-func active() {
-
-}
-
 type Body struct {
 	Board      [][]string `json: "board"`
 	Status     string     `json: "status"`
