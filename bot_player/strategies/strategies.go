@@ -37,10 +37,9 @@ var StrategiesMap = map[string]PlayStrategy{
 	"donot_loose": PlayStrategy{
 		Gen: donotLoose,
 	},
-	//"try_to_win": PlayStrategy{
-	//	Gen: tryToWin,
-	//	},
-	//},
+	"try_to_win": PlayStrategy{
+		Gen: tryToWin,
+	},
 }
 
 type PlayStrategy struct {
@@ -120,10 +119,20 @@ var donotLoose = func(board [][]string, player string) (int, int, error) {
 	return eligiblePlaceToPlay.i, eligiblePlaceToPlay.j, nil
 }
 
-func idealPlay(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxOpponentPlays *int) {
+var tryToWin = func(board [][]string, player string) (int, int, error) {
+	if player == playerO {
+		player = playerX
+	} else {
+		player = playerO
+	}
+	return donotLoose(board, player)
+}
+
+//TODO: a
+func idealPlay(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxOpponentPlays *int, skipOnMatch bool) {
 	if search == "row" || search == "column" {
 		for i := 0; i < len(board); i++ {
-			var sectionOpponentQ int
+			var OpponentQ int
 			var sectionPlayerQ int
 			var emptySpace coord
 
@@ -141,20 +150,20 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 				case "#":
 					emptySpace = coord{i: i, j: j}
 				default:
-					sectionOpponentQ++
+					OpponentQ++
 				}
 			} //end inner for
 			//condiciones para jugar
 			if sectionPlayerQ > 0 {
 				continue
 			}
-			if sectionOpponentQ > *maxOpponentPlays {
-				*maxOpponentPlays = sectionOpponentQ
+			if OpponentQ > *maxOpponentPlays {
+				*maxOpponentPlays = OpponentQ
 				*eligiblePlaceToPlay = emptySpace
 			}
 		}
 	} else if search == "diag1" {
-		var sectionOpponentQ int
+		var OpponentQ int
 		var sectionPlayerQ int
 		var emptySpace coord
 
@@ -166,20 +175,20 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 			case "#":
 				emptySpace = coord{i: i, j: i}
 			default:
-				sectionOpponentQ++
+				OpponentQ++
 			}
 		}
 
 		if sectionPlayerQ > 0 {
 			return
 		}
-		if sectionOpponentQ > *maxOpponentPlays {
-			*maxOpponentPlays = sectionOpponentQ
+		if OpponentQ > *maxOpponentPlays {
+			*maxOpponentPlays = OpponentQ
 			*eligiblePlaceToPlay = emptySpace
 		}
 
 	} else if search == "diag2" {
-		var sectionOpponentQ int
+		var OpponentQ int
 		var sectionPlayerQ int
 		var emptySpace coord
 		for i := 0; i < len(board); i++ {
@@ -191,15 +200,15 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 			case "#":
 				emptySpace = coord{i: i, j: len(board) - i}
 			default:
-				sectionOpponentQ++
+				OpponentQ++
 			}
 		}
 
 		if sectionPlayerQ > 0 {
 			return
 		}
-		if sectionOpponentQ > *maxOpponentPlays {
-			*maxOpponentPlays = sectionOpponentQ
+		if OpponentQ > *maxOpponentPlays {
+			*maxOpponentPlays = OpponentQ
 			*eligiblePlaceToPlay = emptySpace
 		}
 

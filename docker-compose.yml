@@ -30,6 +30,6 @@ services:
         environment:
             - HOST=server
             - PORT=9090
-            - STRATEGY=donot_loose
+            - STRATEGY=try_to_win
             - PLAYER=X
             - PLAYFIRST=false
