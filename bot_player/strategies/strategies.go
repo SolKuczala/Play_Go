@@ -32,16 +32,7 @@ var StrategiesMap = map[string]PlayStrategy{
 		},
 	},
 	"linear": PlayStrategy{
-		Gen: func(board [][]string, player string) (int, int, error) {
-			for i := 0; i < len(board); i++ {
-				for j := 0; j < len(board); j++ {
-					if board[i][j] == "#" {
-						return i, j, nil
-					}
-				}
-			}
-			return 0, 0, errors.New("chau")
-		},
+		Gen: linear,
 	},
 	"donot_loose": PlayStrategy{
 		Gen: donotLoose,
@@ -57,9 +48,10 @@ type PlayStrategy struct {
 	Gen func(board [][]string, player string) (int, int, error)
 }
 
+/*Play : inner function of Playstrategy to make the play*/
 func (ps PlayStrategy) Play(baseURL, player string, tries int, board [][]string) error {
 	isOk := false
-	for !isOk && tries > 0 {
+	for !isOk && (tries > 0) {
 		x, y, err := ps.Gen(board, player)
 		if err != nil {
 			return err
@@ -69,7 +61,6 @@ func (ps PlayStrategy) Play(baseURL, player string, tries int, board [][]string)
 		} else {
 			tries--
 		}
-		//TO-DO: necesito handlear error 400 o mejorar el filtro de donot_loose
 	}
 	if !isOk && tries <= 0 {
 		return errors.New("Too many tries")
@@ -98,18 +89,33 @@ func (ps PlayStrategy) sendPlay(baseURL string, player string, coordX, coordY in
 	fmt.Println("response Status : ", resp.Status)
 	//fmt.Println("response Headers : ", resp.Header)
 	fmt.Println("response Body : ", string(respBody))
+
 	if resp.StatusCode != http.StatusOK {
 		return errors.New("Response status is not 200")
 	}
 	return nil
 }
 
+var linear = func(board [][]string, player string) (int, int, error) {
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board); j++ {
+			if board[i][j] == "#" {
+				return i, j, nil
+			}
+		}
+	}
+	return 0, 0, errors.New("chau")
+}
+
 var donotLoose = func(board [][]string, player string) (int, int, error) {
-	var eligiblePlaceToPlay coord
-	var maxOpponentPlays int
+	eligiblePlaceToPlay := coord{i: -1, j: -1}
+	var maxOpponentPlays int = 0
 
 	for _, search := range []string{"row", "column", "diag1", "diag2"} {
 		idealPlay(board, player, search, &eligiblePlaceToPlay, &maxOpponentPlays)
+	}
+	if eligiblePlaceToPlay.i == -1 {
+		return linear(board, player)
 	}
 	return eligiblePlaceToPlay.i, eligiblePlaceToPlay.j, nil
 }
@@ -139,7 +145,7 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 				}
 			} //end inner for
 			//condiciones para jugar
-			if sectionPlayerQ > 0 /*la suma de player y opponent != len(board)*/ {
+			if sectionPlayerQ > 0 {
 				continue
 			}
 			if sectionOpponentQ > *maxOpponentPlays {

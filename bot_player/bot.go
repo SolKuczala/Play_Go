@@ -22,16 +22,18 @@ func main() {
 	//playchar default X, sino O
 	fmt.Printf("Strategy: %s\n", strategyName)
 	if firstToPlay {
+		time.Sleep(waitTime)
 		if err := getBoard(baseURL, 3); err != nil {
 			panic("Can't create board :(")
 		}
+		time.Sleep(waitTime)
 	}
 	selectedStrategy := strategies.StrategiesMap[strategyName]
 	for true {
 		//pido status
 		response, err := getStatus(baseURL)
 		if err != nil {
-			fmt.Println("hay error de get status")
+			fmt.Println("there is an error in get status")
 		} else {
 			if response.Winners > 0 {
 				break
@@ -46,9 +48,11 @@ func main() {
 		}
 
 		if myTurn {
-			selectedStrategy.Play(baseURL, myPlayerChar, 1, response.Board)
+			err := selectedStrategy.Play(baseURL, myPlayerChar, 1, response.Board)
+			if err != nil {
+				fmt.Printf("Error of changed strategy: %v ", err)
+			}
 		}
-
 		time.Sleep(waitTime)
 	}
 	fmt.Println("End of game")
@@ -108,6 +112,4 @@ func getStatus(baseURL string) (Body, error) {
 		return bodyContent, err
 	}
 	return bodyContent, nil
-
-	//log.Println(string(body))    fmt.Printf("%+v",
 }

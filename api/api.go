@@ -67,8 +67,8 @@ func sendPlay(c *gin.Context) {
 	err := T.Play(playerParam, coor, &GAME)
 	//chekeamos si hay error
 	if err != nil {
+		//error 400
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
-		//si el error es 400 deberia mandarselo al bot para que lo handlee
 		return
 	}
 	//si hay winner
