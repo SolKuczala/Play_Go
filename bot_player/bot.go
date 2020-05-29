@@ -15,8 +15,6 @@ import (
 
 var waitTime = 1500 * time.Millisecond
 
-//var defaultTriesTreshold = 10
-
 func main() {
 	baseURL, strategyName, myPlayerChar, firstToPlay := getUserParams()
 	//playchar default X, sino O
@@ -26,8 +24,9 @@ func main() {
 		if err := getBoard(baseURL, 3); err != nil {
 			panic("Can't create board :(")
 		}
-		time.Sleep(waitTime)
 	}
+	time.Sleep(waitTime)
+
 	selectedStrategy := strategies.StrategiesMap[strategyName]
 	for true {
 		//pido status

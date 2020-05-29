@@ -23,13 +23,7 @@ type coord struct {
  */
 var StrategiesMap = map[string]PlayStrategy{
 	"random": PlayStrategy{
-		Gen: func(board [][]string, player string) (int, int, error) {
-			rand.Seed(time.Now().UnixNano())
-			randomNum := func(min, max int) int {
-				return rand.Intn(max-min) + min
-			}
-			return randomNum(0, len(board)), randomNum(0, len(board)), nil
-		},
+		Gen: random,
 	},
 	"linear": PlayStrategy{
 		Gen: linear,
@@ -71,7 +65,7 @@ func (ps PlayStrategy) sendPlay(baseURL string, player string, coordX, coordY in
 	fmt.Println("playing...")
 	client := &http.Client{}
 	// Create request, send to my api
-	req, err := http.NewRequest("PUT", baseURL+"/send-play/"+player+"/"+strconv.Itoa(coordX)+"/"+strconv.Itoa(coordY), nil) //+strconv.Itoa(randomNum)+"/"+strconv.Itoa(randomNum)/ or url.Values{"player": {"X"}, "row": {"1"}, "column": {"0"}
+	req, err := http.NewRequest("PUT", baseURL+"/send-play/"+player+"/"+strconv.Itoa(coordX)+"/"+strconv.Itoa(coordY), nil)
 	if err != nil {
 		fmt.Println(err)
 		return err
@@ -95,6 +89,14 @@ func (ps PlayStrategy) sendPlay(baseURL string, player string, coordX, coordY in
 	return nil
 }
 
+var random = func(board [][]string, player string) (int, int, error) {
+	rand.Seed(time.Now().UnixNano())
+	randomNum := func(min, max int) int {
+		return rand.Intn(max-min) + min
+	}
+	return randomNum(0, len(board)), randomNum(0, len(board)), nil
+}
+
 var linear = func(board [][]string, player string) (int, int, error) {
 	for i := 0; i < len(board); i++ {
 		for j := 0; j < len(board); j++ {
@@ -108,10 +110,10 @@ var linear = func(board [][]string, player string) (int, int, error) {
 
 var donotLoose = func(board [][]string, player string) (int, int, error) {
 	eligiblePlaceToPlay := coord{i: -1, j: -1}
-	var maxOpponentPlays int = 0
+	var maxPlays int = -1
 
 	for _, search := range []string{"row", "column", "diag1", "diag2"} {
-		idealPlay(board, player, search, &eligiblePlaceToPlay, &maxOpponentPlays)
+		idealPlay(board, player, search, &eligiblePlaceToPlay, &maxPlays)
 	}
 	if eligiblePlaceToPlay.i == -1 {
 		return linear(board, player)
@@ -128,13 +130,12 @@ var tryToWin = func(board [][]string, player string) (int, int, error) {
 	return donotLoose(board, player)
 }
 
-//TODO: a
-func idealPlay(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxOpponentPlays *int, skipOnMatch bool) {
+func idealPlay(board [][]string, player string, search string, eligiblePlaceToPlay *coord, maxPlays *int) {
 	if search == "row" || search == "column" {
 		for i := 0; i < len(board); i++ {
 			var OpponentQ int
-			var sectionPlayerQ int
-			var emptySpace coord
+			var PlayerQ int
+			var thisEmptySpace coord
 
 			for j := 0; j < len(board); j++ {
 				var element string
@@ -146,70 +147,71 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 
 				switch element {
 				case player:
-					sectionPlayerQ++
+					PlayerQ++
 				case "#":
-					emptySpace = coord{i: i, j: j}
+					thisEmptySpace = coord{i: i, j: j}
 				default:
 					OpponentQ++
 				}
 			} //end inner for
 			//condiciones para jugar
-			if sectionPlayerQ > 0 {
+			if PlayerQ > 0 {
 				continue
 			}
-			if OpponentQ > *maxOpponentPlays {
-				*maxOpponentPlays = OpponentQ
-				*eligiblePlaceToPlay = emptySpace
+			if OpponentQ > *maxPlays {
+				*maxPlays = OpponentQ
+				*eligiblePlaceToPlay = thisEmptySpace
 			}
 		}
 	} else if search == "diag1" {
 		var OpponentQ int
-		var sectionPlayerQ int
-		var emptySpace coord
+		var PlayerQ int
+		var thisEmptySpace coord
 
 		for i := 0; i < len(board); i++ {
 			element := board[i][i]
 			switch element {
 			case player:
-				sectionPlayerQ++
+				PlayerQ++
 			case "#":
-				emptySpace = coord{i: i, j: i}
+				thisEmptySpace = coord{i: i, j: i}
 			default:
 				OpponentQ++
 			}
 		}
 
-		if sectionPlayerQ > 0 {
+		if PlayerQ > 0 {
 			return
 		}
-		if OpponentQ > *maxOpponentPlays {
-			*maxOpponentPlays = OpponentQ
-			*eligiblePlaceToPlay = emptySpace
+		if OpponentQ > *maxPlays {
+			*maxPlays = OpponentQ
+			*eligiblePlaceToPlay = thisEmptySpace
 		}
 
 	} else if search == "diag2" {
 		var OpponentQ int
-		var sectionPlayerQ int
-		var emptySpace coord
+		var PlayerQ int
+		var thisEmptySpace coord
+
 		for i := 0; i < len(board); i++ {
 			element := board[i][len(board)-1-i]
 
 			switch element {
 			case player:
-				sectionPlayerQ++
+				PlayerQ++
 			case "#":
-				emptySpace = coord{i: i, j: len(board) - i}
+				thisEmptySpace = coord{i: i, j: len(board) - i}
 			default:
 				OpponentQ++
 			}
 		}
 
-		if sectionPlayerQ > 0 {
+		if PlayerQ > 0 {
 			return
 		}
-		if OpponentQ > *maxOpponentPlays {
-			*maxOpponentPlays = OpponentQ
-			*eligiblePlaceToPlay = emptySpace
+		if OpponentQ > *maxPlays {
+			*maxPlays = OpponentQ
+			*eligiblePlaceToPlay = thisEmptySpace
 		}
 
 	}

@@ -53,3 +53,10 @@ Just run:
 > docker-compose build && docker-compose up
 
 **Have in mind that you must have added your user to the docker group in order to run it without sudo privileges.**
+
+
+
+				//para bloquear si hay uno mio, ya esta
+	//si la cantidad del oponente es mayor al maximoOponente que conte antes, reemplazo
+				//si en la linea hay un oponente salteo
+				//busco la linea con mas fichas mias si es mas grande que el ultimo maximo, reemplazo.
