@@ -149,7 +149,11 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 				case player:
 					PlayerQ++
 				case "#":
-					thisEmptySpace = coord{i: i, j: j}
+					if search == "row" {
+						thisEmptySpace = coord{i: i, j: j}
+					} else {
+						thisEmptySpace = coord{i: j, j: i}
+					}
 				default:
 					OpponentQ++
 				}
@@ -200,7 +204,7 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 			case player:
 				PlayerQ++
 			case "#":
-				thisEmptySpace = coord{i: i, j: len(board) - i}
+				thisEmptySpace = coord{i: i, j: len(board) - 1 - i}
 			default:
 				OpponentQ++
 			}
