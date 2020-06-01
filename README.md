@@ -1,4 +1,10 @@
 # Tic Tac Toe Game
+
+[![Build Status](https://travis-ci.com/SolKuczala/tic-tac-go.svg?branch=master)](https://travis-ci.com/SolKuczala/tic-tac-go)
+
+[![Coverage Status](https://coveralls.io/repos/github/SolKuczala/tic-tac-go/badge.svg)](https://coveralls.io/github/SolKuczala/tic-tac-go)
+
+
 Implements package, cli and api.
 
 ![Diagram](./docs/ttt.png)
@@ -54,9 +60,7 @@ Just run:
 
 **Have in mind that you must have added your user to the docker group in order to run it without sudo privileges.**
 
+### Running tests
+> go test ./... -covermode=count -coverprofile=coverage.out  
 
-
-				//para bloquear si hay uno mio, ya esta
-	//si la cantidad del oponente es mayor al maximoOponente que conte antes, reemplazo
-				//si en la linea hay un oponente salteo
-				//busco la linea con mas fichas mias si es mas grande que el ultimo maximo, reemplazo.
+> $GOPATH/bin/goveralls -coverprofile=coverage.out -service=travis-ci -repotoken {$COVERALLS REPO TOKEN}  
