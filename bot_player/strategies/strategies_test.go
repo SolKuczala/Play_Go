@@ -6,9 +6,10 @@ import (
 )
 
 type testCase struct {
-	board [][]string
-	x, y  int
-	err   error
+	board  [][]string
+	player string
+	x, y   int
+	err    error
 }
 
 func TestLinear(t *testing.T) {
@@ -112,6 +113,7 @@ func TestTryToWin(t *testing.T) {
 				[]string{"#", "#", "#"},
 			},
 			x: 2, y: 0, err: nil,
+			player: "X",
 		},
 		testCase{
 			board: [][]string{
@@ -120,21 +122,21 @@ func TestTryToWin(t *testing.T) {
 				[]string{"#", "#", "#"},
 			},
 			x: 1, y: 2, err: nil,
+			player: "X",
 		},
 		testCase{
 			board: [][]string{
-				[]string{"X", "O", "X"},
-				[]string{"O", "X", "#"},
-				[]string{"O", "O", "#"},
+				[]string{"O", "X", "O"},
+				[]string{"X", "O", "#"},
+				[]string{"X", "X", "#"},
 			},
 			x: 2, y: 2, err: nil,
+			player: "O",
 		},
 	}
 
-	player := "X"
-
 	for _, tc := range testCases {
-		x, y, err := tryToWin(tc.board, player)
+		x, y, err := tryToWin(tc.board, tc.player)
 		t.Logf("%d:%d [%v]", x, y, err)
 		if x != tc.x || y != tc.y {
 			t.Fail()
