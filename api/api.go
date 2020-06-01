@@ -94,19 +94,4 @@ func getStatus(c *gin.Context) {
 	return
 }
 
-/*see if i can make toss a coin option
-func tossCoin(election bool)  {
-	if election == tr{
-
-	}
-}*/
-/*
-proye:
-que dos maquinas jueguen al tic tac toe.
-el primer jugador pide crear el tablero
-el siguiente jugador pide el status y envia su jugada
-el p2 pide status y responde con la jugada siguiente
------------
-dos dockers que al levantarlos hacen la jugada
-TO-DO:un externo cuenta los resultados, puede sacar estadisticas
-*/
+/* TO-DO:un externo cuenta los resultados, puede sacar estadisticas */

@@ -32,7 +32,7 @@ type Coord struct {
 
 /*NewGame initializes and returns game struct*/
 func NewGame(size int) Game {
-	var matrix [][]string //[]
+	var matrix [][]string
 
 	for i := 0; i < size; i++ {
 		matrix = append(matrix, []string{}) //append another slice, size times
