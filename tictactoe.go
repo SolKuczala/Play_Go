@@ -179,31 +179,12 @@ func checkWinner(game *Game) {
 		}
 		plays.column[x] = 0
 
-		//check si diag1
-		if plays.diag1[x] == win {
-			game.Status = GameStatusEndWithWinner
-			return
-		}
-		plays.diag1[x] = 0
-
-		if plays.diag1[o] == win {
-			game.Status = GameStatusEndWithWinner
-			return
-		}
-		plays.diag1[o] = 0
-		//check si diag2
-
-		if plays.diag2[x] == win {
-			game.Status = GameStatusEndWithWinner
-			return
-		}
-		plays.diag2[x] = 0
-		if plays.diag2[o] == win {
-			game.Status = GameStatusEndWithWinner
-			return
-		}
-		plays.diag2[o] = 0
 	} //end of for
+
+	//check si diag1
+	if plays.diag1[x] == win || plays.diag1[o] == win || plays.diag2[x] == win || plays.diag2[o] == win {
+		game.Status = GameStatusEndWithWinner
+	}
 
 	if game.Status == GameStatusOngoing {
 		for _, row := range game.Board {
