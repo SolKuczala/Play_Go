@@ -29,7 +29,6 @@ func main() {
 
 	selectedStrategy := strategies.StrategiesMap[strategyName]
 	for true {
-		//pido status
 		response, err := getStatus(baseURL)
 		if err != nil {
 			fmt.Println("there is an error in get status")

@@ -136,7 +136,6 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 			var OpponentQ int
 			var PlayerQ int
 			var thisEmptySpace coord
-			//cuento la linea (primero pasaria row)
 			for j := 0; j < len(board); j++ {
 				var element string
 				if search == "row" {
@@ -158,7 +157,6 @@ func idealPlay(board [][]string, player string, search string, eligiblePlaceToPl
 					OpponentQ++
 				}
 			} //end inner for
-			//condiciones para jugar
 			if PlayerQ > 0 {
 				continue
 			}
