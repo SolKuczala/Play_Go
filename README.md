@@ -15,7 +15,7 @@ This guide assumes bash shell.
 > cd tic-tac-toe  
 > docker build .   
 
-## Two options, changing env var "MODE"
+## Two modes, changing env var "MODE" and running them with the Dockerfile 
 to run api:
 > docker run -e MODE=api -p {port you want}:9090 -it {id or docker tag}
 
