@@ -5,9 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/go
 ENV MODE=api
 
-RUN apk update && apk upgrade
-RUN apk add --no-cache
-RUN git=2.8.6-r0
+RUN apk --update add git
 
 RUN go get github.com/c-bata/go-prompt github.com/gin-gonic/gin
 
