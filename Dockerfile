@@ -1,11 +1,11 @@
-FROM alpine:latest
+FROM alpine/git:latest
 FROM golang:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/go
 ENV MODE=api
 
-RUN apk --update add git
+RUN apk update
 
 RUN go get github.com/c-bata/go-prompt github.com/gin-gonic/gin
 
