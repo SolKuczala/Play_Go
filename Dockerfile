@@ -1,4 +1,4 @@
-FROM alpine:3.7
+FROM alpine:latest
 FROM golang:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
