@@ -1,4 +1,4 @@
-FROM alpine/git:latest
+FROM ROM alpine:3.7
 FROM golang:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
