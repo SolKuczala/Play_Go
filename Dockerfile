@@ -1,10 +1,11 @@
-FROM ubuntu:latest
+FROM alpine:latest
+FROM golang:latest
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GOPATH=/go
 ENV MODE=api
 
-#RUN apt-get update -y && apt-get install -y golang git
+RUN apk update -y && apk add -y git
 
 RUN go get github.com/c-bata/go-prompt github.com/gin-gonic/gin
 
