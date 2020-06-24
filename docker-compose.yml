@@ -4,8 +4,6 @@ services:
     server:
         build:
             context: ./
-        environment:
-            - MODE=api
         ports:
             - "8080:9090"
 
