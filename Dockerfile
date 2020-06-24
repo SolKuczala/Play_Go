@@ -19,4 +19,4 @@ RUN go install
 
 WORKDIR ${GOPATH}/bin/
 
-ENTRYPOINT ./${MODE}
+CMD ["/bin/bash", "true"]
