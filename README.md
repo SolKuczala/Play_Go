@@ -15,7 +15,8 @@ This guide assumes bash shell.
 > cd tic-tac-toe  
 > docker build .   
 
-## Selecting modes.  
+Outdated
+## Selecting modes 
 to run api:
 > docker run -e MODE=api -p {port you want}:9090 -it {id or docker tag}
 
