@@ -1,6 +1,5 @@
 package main
 
-//state
 import (
 	"errors"
 	"net/http"
