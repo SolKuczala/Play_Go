@@ -80,14 +80,14 @@ func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
 	x := int(coordinate.X) //row
 	y := int(coordinate.Y) //column
 	player := strings.ToUpper(char)
-	//si la letra es la correspondiente
+	//check if player is the correct letter
 	if player != playerX && player != playerO {
 		return errors.New("not a valid player")
 	}
 	matrix := *board
-	//si las coordenadas no se pasan
+	//check if coordinates are on the limits
 	if l := len(*board); x < l && y < l {
-		//si no esta ocupado, placea
+		//if place its not occupied, place it
 		if matrix[x][y] == noPlayer {
 			matrix[x][y] = player
 		} else {
@@ -113,13 +113,11 @@ func checkWinner(game *Game) {
 
 	for row := 0; row < len(game.Board); row++ {
 		for column := 0; column < len(game.Board); column++ {
-			//aca me voy a leer lo que viene por row y column(el string)
 			matrix := game.Board
 			rowPick := matrix[row][column]
 			columnPick := matrix[column][row]
 			if rowPick == noPlayer && columnPick == noPlayer {
 				continue
-				//esto va al column++
 			}
 
 			switch rowPick {
@@ -153,7 +151,6 @@ func checkWinner(game *Game) {
 			}
 
 		} // end inner for
-		//check si en row hay 3 iguales
 		if plays.row[o] == win {
 			game.Status = GameStatusEndWithWinner
 			return
@@ -166,7 +163,6 @@ func checkWinner(game *Game) {
 		}
 		plays.row[x] = 0
 
-		//check si column
 		if plays.column[o] == win {
 			game.Status = GameStatusEndWithWinner
 			return
@@ -181,7 +177,6 @@ func checkWinner(game *Game) {
 
 	} //end of for
 
-	//check si diag1
 	if plays.diag1[x] == win || plays.diag1[o] == win || plays.diag2[x] == win || plays.diag2[o] == win {
 		game.Status = GameStatusEndWithWinner
 	}
