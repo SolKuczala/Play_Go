@@ -29,7 +29,6 @@ func createGame(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		return
 	}
-	//controlar size:
 	if size < 3 || size > 9 {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and between 3 and 9")})
 		return
@@ -43,15 +42,12 @@ func sendPlay(c *gin.Context) {
 	rowParam := c.Param("row")
 	columnParam := c.Param("column")
 	playerParam := c.Param("player")
-	//checkeo player
 	if playerParam != "X" && playerParam != "O" {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")})
 		return
 	}
-	//una vez pasado eso, pasamos los numeros de str a int
 	row, errR := strconv.Atoi(rowParam)
 	column, errC := strconv.Atoi(columnParam)
-	//checkeo errores
 	if errR != nil || errC != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("We need numbers ('-.-)\n")})
 		return
@@ -61,31 +57,25 @@ func sendPlay(c *gin.Context) {
 			"error":  errors.New("No negative numbers, and less than 10").Error()})
 		return
 	}
-	//una vez que ta todo bien lo agregamos al struct con su corr format
 	coor := T.Coord{X: uint(row), Y: uint(column)}
-	//se lo pasamos a Play del package T
 	err := T.Play(playerParam, coor, &GAME)
-	//chekeamos si hay error
 	if err != nil {
 		//error 400
 		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": err.Error()})
 		return
 	}
-	//si hay winner
 	if GAME.Status != T.GameStatusOngoing {
 		if GAME.Status == T.GameStatusEndWithDraw {
 			c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": "DRAW"})
 		} else {
 			c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "winner": GAME.Lastplayed})
 		}
-		//fmt.Println(BOARD)
 		return
 	}
-	//sino muestro el estado para que se siga la partida
 	c.JSON(http.StatusOK, gin.H{"status": "ok", "board": GAME.Board, "byPlayer": GAME.Lastplayed})
 }
 
-/*devuelve el board, a quien le toca*/
+/*Returns the board status*/
 func getStatus(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "ok",
 		"board":      GAME.Board,
@@ -94,4 +84,4 @@ func getStatus(c *gin.Context) {
 	return
 }
 
-/* TO-DO:un externo cuenta los resultados, puede sacar estadisticas */
+/* TO-DO: Some packaage that counts the results, to get stadistics */
