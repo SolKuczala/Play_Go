@@ -11,14 +11,14 @@ import (
 )
 
 func getSizeFromUser() (int, error) {
-	fmt.Println("Which size?") //int
-	//pido el size del tablero
+	fmt.Println("Which size? e.g: 3") //int
+	// ask for table size
 	strNum := prompt.Input("new> ", exitCompleter)
 	num, err := strconv.Atoi(strNum)
 	if err != nil {
-		err = errors.New("We need numbers ('-.-)\n")
+		err = errors.New("we need numbers ('-.-)\n")
 	} else if num < 0 || num > 9 {
-		err = errors.New("No negative numbers, and less than 10")
+		err = errors.New("no negative numbers, and less than 10")
 	}
 	return num, err
 }
@@ -54,13 +54,13 @@ func getCoorFromPlayer() (T.Coord, string, error) {
 	}
 	//si el string no existe
 	if len(input) == 0 {
-		return coorInt, "", errors.New("pero yo no veo nada!")
+		return coorInt, "", errors.New("can't see a thing")
 	}
 	//obtengo un array de dos strings
 	inputSplit := strings.Split(input, ":")
 	//que no haya mas de un :, que no haya menos de dos strings
 	if len(inputSplit) != 2 {
-		return coorInt, "", errors.New("Am I missing something? :/\n")
+		return coorInt, "", errors.New("am I missing something? :/\n")
 	}
 	//si uno de los 2 esta vacio
 	if inputSplit[0] == "" || inputSplit[1] == "" {
@@ -71,7 +71,7 @@ func getCoorFromPlayer() (T.Coord, string, error) {
 	num2, err2 := strconv.Atoi(inputSplit[1])
 	//si no son numeros, va error
 	if err1 != nil || err2 != nil {
-		return coorInt, "", errors.New("no es un numeretto >:[")
+		return coorInt, "", errors.New("not a number >:[")
 	}
 	//si numero es neg, err
 	if num1 < 0 || num2 < 0 {
@@ -91,5 +91,5 @@ func switchPlayer(player string) (string, error) {
 	if player == "O" {
 		return "X", nil
 	}
-	return "", fmt.Errorf("Can't switch player %s", player)
+	return "", fmt.Errorf("can't switch player %s", player)
 }

@@ -57,7 +57,7 @@ correct player,
 correct turn,*/
 func Play(char string, coordinate Coord, game *Game) error {
 	if game.Status != GameStatusOngoing {
-		return errors.New("Cannot play, create another board to start again")
+		return errors.New("cannot play, create another board to start again")
 	}
 	if game.Lastplayed == noPlayer || char != game.Lastplayed {
 		err := checkAndPlace(char, coordinate, &game.Board)
@@ -66,7 +66,7 @@ func Play(char string, coordinate Coord, game *Game) error {
 		}
 		game.Lastplayed = char
 	} else {
-		return errors.New("Hey, let the other play too :)")
+		return errors.New("hey, let the other player play too :)")
 	}
 
 	checkWinner(game)
@@ -91,7 +91,7 @@ func checkAndPlace(char string, coordinate Coord, board *[][]string) error {
 		if matrix[x][y] == noPlayer {
 			matrix[x][y] = player
 		} else {
-			return fmt.Errorf("Coordinate {%d %d} Occupied ! Try other place again", x, y)
+			return fmt.Errorf("coordinate {%d %d} Occupied ! Try other place again", x, y)
 		}
 	} else {
 		return fmt.Errorf("{%d %d} Oh oh, there is no board there my friend :/", x, y)
@@ -191,8 +191,6 @@ func checkWinner(game *Game) {
 		}
 		game.Status = GameStatusEndWithDraw
 	}
-
-	return
 }
 
 /*PrintBoard prints a board nicely in cmd-line.*/

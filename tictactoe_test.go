@@ -14,84 +14,84 @@ type testCasePlay struct {
 
 func TestPlay(t *testing.T) {
 	testCases := []testCasePlay{
-		testCasePlay{
+		{
 			char:       "X",
 			coordinate: Coord{X: 0, Y: 0},
 			game: &Game{
 				Board: [][]string{
-					[]string{"#", "#", "#"},
-					[]string{"#", "#", "#"},
-					[]string{"#", "#", "#"},
+					{"#", "#", "#"},
+					{"#", "#", "#"},
+					{"#", "#", "#"},
 				},
 				Lastplayed: "#",
 				Status:     GameStatusOngoing,
 			},
 			err: nil,
 		},
-		testCasePlay{
+		{
 			char:       "O",
 			coordinate: Coord{X: 0, Y: 0},
 			game: &Game{
 				Board: [][]string{
-					[]string{"X", "#", "#"},
-					[]string{"#", "#", "#"},
-					[]string{"#", "#", "#"},
+					{"X", "#", "#"},
+					{"#", "#", "#"},
+					{"#", "#", "#"},
 				},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			err: errors.New("placeholder"),
 		},
-		testCasePlay{
+		{
 			char:       "O",
 			coordinate: Coord{X: 0, Y: 0},
 			game: &Game{
 				Board: [][]string{
-					[]string{"X", "#", "#"},
-					[]string{"#", "X", "#"},
-					[]string{"#", "#", "X"},
+					{"X", "#", "#"},
+					{"#", "X", "#"},
+					{"#", "#", "X"},
 				},
 				Lastplayed: "X",
 				Status:     GameStatusEndWithWinner,
 			},
 			err: errors.New("Cannot play, create another board to start again"),
 		},
-		testCasePlay{
+		{
 			char:       "X",
 			coordinate: Coord{X: 0, Y: 0},
 			game: &Game{
 				Board: [][]string{
-					[]string{"X", "#", "#"},
-					[]string{"#", "X", "#"},
-					[]string{"#", "#", "X"},
+					{"X", "#", "#"},
+					{"#", "X", "#"},
+					{"#", "#", "X"},
 				},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			err: errors.New("Hey, let the other play too :)"),
 		},
-		testCasePlay{
+		{
 			char:       "Z",
 			coordinate: Coord{X: 0, Y: 0},
 			game: &Game{
 				Board: [][]string{
-					[]string{"X", "#", "#"},
-					[]string{"#", "X", "#"},
-					[]string{"#", "#", "X"},
+					{"X", "#", "#"},
+					{"#", "X", "#"},
+					{"#", "#", "X"},
 				},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			err: errors.New("not a valid player"),
 		},
-		testCasePlay{
+		{
 			char:       "X",
 			coordinate: Coord{X: 3, Y: 3},
 			game: &Game{
 				Board: [][]string{
-					[]string{"X", "#", "#"},
-					[]string{"#", "X", "#"},
-					[]string{"#", "#", "X"},
+					{"X", "#", "#"},
+					{"#", "X", "#"},
+					{"#", "#", "X"},
 				},
 				Lastplayed: "O",
 				Status:     GameStatusOngoing,
@@ -116,88 +116,88 @@ type testCaseCW struct {
 
 func TestCheckWinner(t *testing.T) {
 	testCases := []testCaseCW{
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"X", "#", "#"},
-				[]string{"#", "#", "#"},
-				[]string{"#", "#", "#"},
+				{"X", "#", "#"},
+				{"#", "#", "#"},
+				{"#", "#", "#"},
 			},
 				Lastplayed: "",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusOngoing,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"X", "X", "X"},
-				[]string{"#", "#", "#"},
-				[]string{"#", "#", "#"},
+				{"X", "X", "X"},
+				{"#", "#", "#"},
+				{"#", "#", "#"},
 			},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithWinner,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"O", "#", "#"},
-				[]string{"#", "O", "#"},
-				[]string{"#", "#", "O"},
+				{"O", "#", "#"},
+				{"#", "O", "#"},
+				{"#", "#", "O"},
 			},
 				Lastplayed: "O",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithWinner,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"X", "#", "#"},
-				[]string{"X", "#", "#"},
-				[]string{"X", "#", "#"},
+				{"X", "#", "#"},
+				{"X", "#", "#"},
+				{"X", "#", "#"},
 			},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithWinner,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"#", "#", "O"},
-				[]string{"#", "O", "#"},
-				[]string{"O", "#", "#"},
+				{"#", "#", "O"},
+				{"#", "O", "#"},
+				{"O", "#", "#"},
 			},
 				Lastplayed: "O",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithWinner,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"X", "X", "O"},
-				[]string{"O", "O", "X"},
-				[]string{"X", "O", "O"},
+				{"X", "X", "O"},
+				{"O", "O", "X"},
+				{"X", "O", "O"},
 			},
 				Lastplayed: "X",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithDraw,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"#", "O", "#"},
-				[]string{"#", "O", "#"},
-				[]string{"#", "O", "#"},
+				{"#", "O", "#"},
+				{"#", "O", "#"},
+				{"#", "O", "#"},
 			},
 				Lastplayed: "O",
 				Status:     GameStatusOngoing,
 			},
 			expextedGameStatus: GameStatusEndWithWinner,
 		},
-		testCaseCW{
+		{
 			game: &Game{Board: [][]string{
-				[]string{"#", "#", "#"},
-				[]string{"#", "#", "#"},
-				[]string{"O", "O", "O"},
+				{"#", "#", "#"},
+				{"#", "#", "#"},
+				{"O", "O", "O"},
 			},
 				Lastplayed: "O",
 				Status:     GameStatusOngoing,

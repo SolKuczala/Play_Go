@@ -29,7 +29,7 @@ func createGame(c *gin.Context) {
 		return
 	}
 	if size < 3 || size > 9 {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("No negative numbers, and between 3 and 9")})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": ("no negative numbers, and between 3 and 9")})
 		return
 	}
 	GAME = T.NewGame(size)
@@ -42,18 +42,18 @@ func sendPlay(c *gin.Context) {
 	columnParam := c.Param("column")
 	playerParam := c.Param("player")
 	if playerParam != "X" && playerParam != "O" {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("X or O")})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("x or o")})
 		return
 	}
 	row, errR := strconv.Atoi(rowParam)
 	column, errC := strconv.Atoi(columnParam)
 	if errR != nil || errC != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("We need numbers ('-.-)\n")})
+		c.JSON(http.StatusBadRequest, gin.H{"status": "failed", "error": errors.New("we need numbers ('-.-)\n")})
 		return
 	} else if row < 0 || row > 9 || column < 0 || column > 9 {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"status": "failed",
-			"error":  errors.New("No negative numbers, and less than 10").Error()})
+			"error":  errors.New("no negative numbers, and less than 10").Error()})
 		return
 	}
 	coor := T.Coord{X: uint(row), Y: uint(column)}
@@ -80,7 +80,6 @@ func getStatus(c *gin.Context) {
 		"board":      GAME.Board,
 		"lastPlayer": GAME.Lastplayed,
 		"winners":    GAME.Status})
-	return
 }
 
-/* TO-DO: Some packaage that counts the results, to get stadistics */
+/* TO-DO: Some package that counts the results, to get stadistics */

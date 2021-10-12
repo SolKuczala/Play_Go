@@ -7,9 +7,9 @@ import (
 
 func TestPlay(t *testing.T) {
 	players := [][]string{
-		[]string{"X", "O"},
-		[]string{"O", "X"},
-		[]string{"z", ""},
+		{"X", "O"},
+		{"O", "X"},
+		{"z", ""},
 	}
 
 	for _, playerCombo := range players {
