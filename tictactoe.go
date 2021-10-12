@@ -10,7 +10,7 @@ const playerX string = "X"
 const playerO string = "O"
 const noPlayer string = "#"
 
-var o, x = 0, 1
+//var o, x = 0, 1
 
 /*Game containing board type [][]string,lastplayed type string,
 winner type bool*/

@@ -17,9 +17,7 @@ var gameStruct T.Game
 
 func main() {
 	fmt.Println("Tic Tac Toe , Welcome!\n What do you want to do? :)")
-	//while para el juego entero
 	playing := true
-
 	for playing {
 		selectedOpt := prompt.Input("begin> ", mainMenuCompleter)
 		//menu
@@ -38,7 +36,6 @@ func main() {
 				needSize = false
 			}
 		case optPlay:
-			//lo voy a usar despues
 			playerSelected := ""
 			var err error
 			requirePlayer := true
@@ -50,15 +47,15 @@ func main() {
 				}
 				requirePlayer = false
 			}
-			//una vez guardado los jugadores>>
+			// once players are saved>>
 
-			//mientras no haya error o no haya ganador
+			// while no error or no winner
 			var coor T.Coord
 			var err2 error
 			var option string
 			requireCoor := true
 			for requireCoor {
-				//check de cli
+				//check cli
 				coor, option, err2 = getCoorFromPlayer()
 				if option == "home" {
 					requireCoor = false
@@ -72,7 +69,7 @@ func main() {
 					fmt.Println(err2)
 					continue
 				}
-				//guardada la coordenada >>
+				//coord saved >>
 				//fmt.Printf("About to play: Player:%s, Coord:%+v\n", playerSelected, coor)
 				errgame := T.Play(playerSelected, coor, &gameStruct)
 				//fmt.Printf("Result of play: Player:%s, ERR:%+v\n", winner, errgame)
@@ -105,7 +102,7 @@ func main() {
 
 		default:
 			fmt.Println("you selected " + selectedOpt + "\nPress tab to see options")
-			//me devuelve un string "> selectedOpt"
+			// returns string "> selectedOpt"
 
 		} //end of switch
 
