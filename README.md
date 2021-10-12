@@ -9,12 +9,13 @@ Implements package, cli and api.
 
 ![Diagram](./docs/ttt.png)
 
-# Outdated
+
 This guide assumes bash shell.
 
+# Outdated -----
 > cd tic-tac-toe  
 > docker build .   
-
+-------------------
 
 ## Selecting modes 
 to run api:
